@@ -58,3 +58,14 @@ async def post_message(
         conversation_id, text_message.text_message
     )
     return success_response(result, "Post direct message is successfully")
+
+
+@router.delete("/me/fallback/{conversation_id}", status_code=status.HTTP_200_OK)
+async def delete_conversation_fallback(
+    conversation_id: int,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: ConversationController = Depends(get_conversation_controller),
+):
+    result = await controller.delete_conversation_fallback_handler(conversation_id)
+    return success_response(result, "Delete conversation fallback is successfully")

@@ -39,3 +39,9 @@ class ConversationController(BaseController):
             "conversation_id": result.conversation_id,
             "detail": result.response_webhook,
         }
+
+    async def delete_conversation_fallback_handler(self, conversation_id: int):
+        result = await self.conversation_service.delete_conversation_fallback(
+            conversation_id
+        )
+        return result.model_dump()

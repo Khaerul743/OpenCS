@@ -66,3 +66,18 @@ class CustomerRepository(ICustomerRepository):
         if result is None:
             return None
         return result.data["enable_ai"]
+
+    async def update_customer_status_agent_by_customer_id(
+        self, customer_id: int, status: bool
+    ) -> Customers | None:
+        result = await (
+            self.db.table("Customers")
+            .update({"enable_ai": status})
+            .eq("id", customer_id)
+            .execute()
+        )
+
+        if len(result.data) == 0:
+            return None
+
+        return Customers.model_validate(result.data[0])

@@ -54,3 +54,28 @@ class HumanFallbackRepository(IHumanFallbackRepository):
             )
             return Human_Fallback.model_validate(result.data[0])
         return Human_Fallback.model_validate(human_fallback.data)
+
+    async def delete_human_fallback_by_conversation_id(
+        self, conversation_id: int
+    ) -> Human_Fallback | None:
+        result = (
+            await self.db.table("Human_Fallback")
+            .delete()
+            .eq("conversation_id", conversation_id)
+            .execute()
+        )
+
+        if len(result.data) == 0:
+            return None
+
+        result_data = Human_Fallback.model_validate(
+            {
+                "id": result.data[0]["id"],
+                "conversation_id": result.data[0]["conversation_id"],
+                "confidence_level": result.data[0]["confidence_level"],
+                "last_decision_summary": result.data[0]["last_decision_summary"],
+                "created_at": result.data[0]["created_at"],
+            }
+        )
+
+        return result_data

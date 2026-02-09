@@ -16,3 +16,9 @@ class IHumanFallbackRepository(ABC):
         self, payload: InsertNewHumanFallback
     ) -> Human_Fallback:
         pass
+
+    @abstractmethod
+    async def delete_human_fallback_by_conversation_id(
+        self, conversation_id: int
+    ) -> Human_Fallback | None:
+        pass

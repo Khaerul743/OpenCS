@@ -29,23 +29,11 @@ async def main():
     await init_supabase()
     db = get_supabase()
 
-    result = await db.table("Human_Fallback").select("*").eq("business_id", 3).execute()
-    if len(result.data) == 0:
-        return None
-    result_data = [
-        Human_Fallback.model_validate(
-            {
-                "id": i["id"],
-                "conversation_id": i["conversation_id"],
-                "confidence_level": i["confidence_level"],
-                "last_decision_summary": i["last_decision_summary"],
-                "created_at": i["created_at"],
-            }
-        )
-        for i in result.data
-    ]
+    result = (
+        await db.table("Human_Fallback").delete().eq("conversation_id", 10).execute()
+    )
 
-    print(result_data)
+    print(result)
 
 
 asyncio.run(main())

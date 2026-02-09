@@ -11,6 +11,10 @@ from src.domain.repositories import (
     HumanFallbackRepository,
     MessageRepository,
 )
+from src.domain.usecases.conversation import (
+    DeleteConversationFallbackInput,
+    DeleteConversationUseCase,
+)
 from src.domain.usecases.whatsapp import SendTextMessage, SendTextMessageInput
 from src.infrastructure.meta import WhatsappManager
 
@@ -37,6 +41,9 @@ class ConversationService(BaseService):
             self.message_repo,
             self.customer_repo,
             self.whatsapp_manager,
+        )
+        self.delete_conversation_fallback_usecase = DeleteConversationUseCase(
+            self.conversation_repo, self.customer_repo, self.human_fallback_repo
         )
 
     async def _get_business_id(self, user_id: int) -> int | None:
@@ -105,3 +112,18 @@ class ConversationService(BaseService):
             raise RuntimeError("Send message use case did not returned the data")
 
         return result_data
+
+    async def delete_conversation_fallback(self, conversation_id: int):
+        usc_result = await self.delete_conversation_fallback_usecase.execute(
+            DeleteConversationFallbackInput(conversation_id)
+        )
+        if not usc_result.is_success():
+            self.raise_error_usecase(usc_result)
+
+        result_data = usc_result.get_data()
+        if result_data is None:
+            raise RuntimeError(
+                "delete conversation fallback usecase did not return the data"
+            )
+
+        return result_data.result
