@@ -33,9 +33,8 @@ async def get_all_messages(
     return success_response(result, "Get all messages is successfully")
 
 
-@router.get("/me/all/fallback", status_code=status.HTTP_200_OK)
+@router.get("/me/fallback/all", status_code=status.HTTP_200_OK)
 async def get_all_conversation_fallback(
-    conversation_id: int,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: ConversationController = Depends(get_conversation_controller),
@@ -58,6 +57,33 @@ async def post_message(
         conversation_id, text_message.text_message
     )
     return success_response(result, "Post direct message is successfully")
+
+
+@router.get("/agent/status/{conversation_id}")
+async def get_customer_status_agent(
+    conversation_id: int,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: ConversationController = Depends(get_conversation_controller),
+):
+    result = await controller.get_customer_status_agent_handler(conversation_id)
+    return success_response(result, "get customer status agent message is successfully")
+
+
+@router.put("/agent/status/{conversation_id}")
+async def update_customer_status_agent(
+    conversation_id: int,
+    status: bool,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: ConversationController = Depends(get_conversation_controller),
+):
+    result = await controller.update_customer_status_agent_handler(
+        conversation_id, status
+    )
+    return success_response(
+        result, "Update customer status agent message is successfully"
+    )
 
 
 @router.delete("/me/fallback/{conversation_id}", status_code=status.HTTP_200_OK)

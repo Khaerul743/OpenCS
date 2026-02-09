@@ -56,3 +56,15 @@ class AgentRepository(IAgentRepository):
         result = await self.db.table("Agents").insert(payload).execute()
 
         return Agents.model_validate(result.data[0])
+
+    async def update_status_agent(self, agent_id: int, status: bool) -> Agents | None:
+        result = (
+            await self.db.table("Agents")
+            .update({"enable_ai": status})
+            .eq("id", agent_id)
+            .execute()
+        )
+        if len(result.data) == 0:
+            return None
+
+        return Agents.model_validate(result.data[0])

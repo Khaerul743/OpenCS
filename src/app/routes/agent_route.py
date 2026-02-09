@@ -31,3 +31,24 @@ async def get_analytic_agent(
 ):
     result = await controller.get_agent_analytic()
     return success_response(result, "Get analytic agent is successfully")
+
+
+@router.get("/status/me", status_code=status.HTTP_200_OK)
+async def get_status_agent(
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    result = await controller.get_status_agent_handler()
+    return success_response(result, "get status agent is successfully")
+
+
+@router.put("/status/me", status_code=status.HTTP_200_OK)
+async def update_status_agent(
+    status: bool,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    result = await controller.update_status_agent_handler(status)
+    return success_response(result, "Update status agent is successfully")

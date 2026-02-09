@@ -193,6 +193,7 @@ class WhatsappAgentNode(BaseNode):
             "messages": list(state.messages)
             + [AIMessage(content=result_dict["decision_summary"])],
             "business_knowladge_key": result_dict["business_knowladge"],
+            "rag_query": result_dict["rag_query"],
         }
 
     def get_business_knowladge(self, state: WhatsappAgentState):
@@ -210,6 +211,7 @@ class WhatsappAgentNode(BaseNode):
             return {"rag_query_result": None}
 
         tool_result = self.retrieve_document.read_document(state.rag_query)
+        print(f"rag query resutl: {tool_result}")
         return {"rag_query_result": tool_result}
 
     def merge_tool_result(self, state: WhatsappAgentState):

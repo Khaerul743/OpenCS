@@ -67,6 +67,21 @@ class CustomerRepository(ICustomerRepository):
             return None
         return result.data["enable_ai"]
 
+    async def get_customer_status_agent_by_customer_id(
+        self, customer_id: int
+    ) -> bool | None:
+        result = await (
+            self.db.table("Customers")
+            .select("enable_ai")
+            .eq("id", customer_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+
+        return result.data["enable_ai"]
+
     async def update_customer_status_agent_by_customer_id(
         self, customer_id: int, status: bool
     ) -> Customers | None:

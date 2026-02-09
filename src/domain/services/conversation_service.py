@@ -3,7 +3,10 @@ from supabase import AsyncClient
 from src.core.context.request_context import current_user_id
 from src.core.exceptions.auth_exception import UnauthorizedException
 from src.core.exceptions.business_exception import BusinessNotFound
-from src.core.exceptions.whatsapp_exceptions import ConversationNotFound
+from src.core.exceptions.whatsapp_exceptions import (
+    ConversationNotFound,
+    CustomerNotFound,
+)
 from src.domain.repositories import (
     BusinessRepository,
     ConversationRepository,
@@ -112,6 +115,50 @@ class ConversationService(BaseService):
             raise RuntimeError("Send message use case did not returned the data")
 
         return result_data
+
+    async def get_customer_status_agent(self, conversation_id: int):
+        conversation = await self.conversation_repo.get_conversation_by_id(
+            conversation_id
+        )
+        if conversation is None:
+            raise ConversationNotFound()
+
+        customer_id = conversation.customer_id
+        if customer_id is None:
+            self.logger.warning(f"Customer not found: id {customer_id}")
+            raise CustomerNotFound()
+
+        customer_status_agent = (
+            await self.customer_repo.get_customer_status_agent_by_customer_id(
+                customer_id
+            )
+        )
+        if customer_status_agent is None:
+            raise CustomerNotFound()
+
+        return customer_status_agent
+
+    async def update_customer_status_agent(self, conversation_id: int, status: bool):
+        conversation = await self.conversation_repo.get_conversation_by_id(
+            conversation_id
+        )
+        if conversation is None:
+            raise ConversationNotFound()
+
+        customer_id = conversation.customer_id
+        if customer_id is None:
+            self.logger.warning(f"Customer not found: id {customer_id}")
+            raise CustomerNotFound()
+
+        updated_customer = await (
+            self.customer_repo.update_customer_status_agent_by_customer_id(
+                customer_id, status
+            )
+        )
+        if updated_customer is None:
+            raise CustomerNotFound()
+
+        return updated_customer
 
     async def delete_conversation_fallback(self, conversation_id: int):
         usc_result = await self.delete_conversation_fallback_usecase.execute(

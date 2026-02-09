@@ -28,3 +28,12 @@ class AgentController(BaseController):
             "avg_response_time": result.avg_response_time,
             "response_rate": result.response_rate,
         }
+
+    async def get_status_agent_handler(self):
+        result = await self.agent_service.get_status_agent()
+        return {"status": result}
+
+    async def update_status_agent_handler(self, status: bool):
+        result = await self.agent_service.update_status_agent(status)
+
+        return result.model_dump()

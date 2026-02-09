@@ -40,6 +40,20 @@ class ConversationController(BaseController):
             "detail": result.response_webhook,
         }
 
+    async def get_customer_status_agent_handler(self, conversation_id: int):
+        result = await self.conversation_service.get_customer_status_agent(
+            conversation_id
+        )
+        return {"customer status agent": result}
+
+    async def update_customer_status_agent_handler(
+        self, conversation_id: int, status: bool
+    ):
+        result = await self.conversation_service.update_customer_status_agent(
+            conversation_id, status
+        )
+        return result.model_dump()
+
     async def delete_conversation_fallback_handler(self, conversation_id: int):
         result = await self.conversation_service.delete_conversation_fallback(
             conversation_id

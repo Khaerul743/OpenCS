@@ -5944,3 +5944,158 @@ content.list[union[str,dict[any,any]]]
 2026-02-09 11:55:45,312 | INFO | src.infrastructure.vectorstore.chroma_db | Successfully loaded document: Autobiography.pdf
 2026-02-09 12:04:36,429 | INFO | src.core.utils.save_file | Deleted file: documents/user_4/agent_7\Autobiography.pdf
 2026-02-09 12:08:12,579 | ERROR | src.app.middlewares.error_handler | Custom Error: DOCUMENT_KNOWLADGE_NOT_FOUND
+2026-02-09 13:25:31,971 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-09 20:27:09,358 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-09 20:27:24,761 | ERROR | src.app.middlewares.error_handler | Custom Error: DOCUMENT_KNOWLADGE_NOT_FOUND
+2026-02-09 20:28:04,146 | INFO | src.core.utils.save_file | Created directory: documents/user_4/agent_7
+2026-02-09 20:28:04,155 | INFO | src.core.utils.save_file | Saved file: documents/user_4/agent_7\Sejarah_rusdi_store.pdf (type: pdf)
+2026-02-09 20:28:07,063 | INFO | src.infrastructure.vectorstore.chroma_db | Successfully loaded document: Sejarah_rusdi_store.pdf
+2026-02-09 20:29:18,230 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'json_invalid', 'loc': ('body', 388), 'msg': 'JSON decode error', 'input': {}, 'ctx': {'error': 'Illegal trailing comma before end of object'}}]
+2026-02-09 20:29:50,395 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'json_invalid', 'loc': ('body', 388), 'msg': 'JSON decode error', 'input': {}, 'ctx': {'error': 'Illegal trailing comma before end of object'}}]
+2026-02-09 20:32:00,618 | WARNING | src.domain.services.whatsapp_service | agent is not active
+2026-02-09 20:32:46,468 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-09 20:36:25,831 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-09 20:40:39,238 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-09 20:46:23,177 | ERROR | src.domain.services.whatsapp_service | can only concatenate str (not "NoneType") to str
+2026-02-09 20:51:26,879 | ERROR | src.infrastructure.ai.agent.base.base_node | Error while invoking LLM: Error code: 400 - {'error': {'message': "Invalid parameter: messages with role 'tool' must be a response to a preceeding message with 'tool_calls'.", 'type': 'invalid_request_error', 'param': 'messages.[1].role', 'code': None}}
+2026-02-09 20:53:30,136 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-09 20:54:14,239 | ERROR | src.app.controllers.auth_controller | 
+2026-02-09 20:54:14,246 | ERROR | src.app.middlewares.error_handler | Unexpected error: 
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 103, in handle_async_request
+    return await self._connection.handle_async_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 187, in handle_async_request
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 150, in handle_async_request
+    status, headers = await self._receive_response(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        request=request, stream_id=stream_id
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 294, in _receive_response
+    event = await self._receive_stream_event(request, stream_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 336, in _receive_stream_event
+    await self._receive_events(request, stream_id)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 364, in _receive_events
+    events = await self._read_incoming_data(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 455, in _read_incoming_data
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\http2.py", line 441, in _read_incoming_data
+    data = await self._network_stream.read(self.READ_NUM_BYTES, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_backends\anyio.py", line 32, in read
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\auth_route.py", line 43, in refresh
+    result = await controller.refresh_token_handler(request, response)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\auth_controller.py", line 59, in refresh_token_handler
+    raise e
+  File "D:\PROJECT_WA\src\app\controllers\auth_controller.py", line 52, in refresh_token_handler
+    res = await self.auth_service.refresh_access_token(request, response)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\auth_service.py", line 142, in refresh_access_token
+    user = await self.user_repo.get_user_by_id(payload["sub"])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\repositories\user_repository.py", line 37, in get_user_by_id
+    await self.db.table("Users")
+    ...<3 lines>...
+    .execute()
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 110, in execute
+    r = await AsyncSingleRequestBuilder(self.request).execute()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 74, in execute
+    r = await self.request.send()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadError

@@ -34,3 +34,14 @@ class ConversationNotFound(BaseCustomeException):
                 "message": "Conversation not found, please enter the right id",
             },
         )
+
+
+class CustomerNotFound(BaseCustomeException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "CUSTOMER_NOT_FOUND",
+                "message": "customer not found, please enter the right id",
+            },
+        )

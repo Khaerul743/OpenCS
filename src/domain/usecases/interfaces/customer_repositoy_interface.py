@@ -28,6 +28,12 @@ class ICustomerRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_customer_status_agent_by_customer_id(
+        self, customer_id: int
+    ) -> bool | None:
+        pass
+
+    @abstractmethod
     async def update_customer_status_agent_by_customer_id(
         self, customer_id: int, status: bool
     ) -> Customers | None:

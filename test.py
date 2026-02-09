@@ -91,35 +91,35 @@ asyncio.run(main())
 
 #     print(agent.get_response())
 
-# data = {
-#     "object": "whatsapp_business_account",
-#     "entry": [
-#         {
-#             "id": "294934934",
-#             "changes": [
-#                 {
-#                     "value": {
-#                         "messaging_product": "whatsapp",
-#                         "metadata": {
-#                             "display_phone_number": "48384",
-#                             "phone_number_id": "12345678",
-#                         },
-#                         "contacts": [
-#                             {"profile": {"name": "amba"}, "wa_id": "19139238"}
-#                         ],
-#                         "messages": [
-#                             {
-#                                 "from": "2487439843",
-#                                 "id": "843848384",
-#                                 "timestamp": "WAKTU",
-#                                 "text": {"body": "inpo product apa aja"},
-#                                 "type": "text",
-#                             }
-#                         ],
-#                     },
-#                     "field": "messages",
-#                 }
-#             ],
-#         }
-#     ],
-# }
+data = {
+    "object": "whatsapp_business_account",
+    "entry": [
+        {
+            "id": "294934934",
+            "changes": [
+                {
+                    "value": {
+                        "messaging_product": "whatsapp",
+                        "metadata": {
+                            "display_phone_number": "48384",
+                            "phone_number_id": "12345678",
+                        },
+                        "contacts": [
+                            {"profile": {"name": "amba"}, "wa_id": "19139238"}
+                        ],
+                        "messages": [
+                            {
+                                "from": "2487439843",
+                                "id": "843848384",
+                                "timestamp": "WAKTU",
+                                "text": {"body": "inpo product apa aja"},
+                                "type": "text",
+                            }
+                        ],
+                    },
+                    "field": "messages",
+                }
+            ],
+        }
+    ],
+}

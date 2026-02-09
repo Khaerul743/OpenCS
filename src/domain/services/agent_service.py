@@ -96,3 +96,32 @@ class AgentService(BaseService):
             raise RuntimeError("Get analytic usecase did not returned the data")
 
         return result_data
+
+    async def get_status_agent(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        status = await self.agent_repo.get_status_agent(agent_id)
+        if status is None:
+            raise AgentNotFound()
+        return status
+
+    async def update_status_agent(self, status: bool):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        updated_agent = await self.agent_repo.update_status_agent(agent_id, status)
+        if updated_agent is None:
+            raise AgentNotFound()
+
+        return updated_agent

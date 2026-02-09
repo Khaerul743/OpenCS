@@ -22,3 +22,7 @@ class IAgentRepository(ABC):
         self, business_id: int, agent_data: InsertAgent
     ) -> Agents:
         pass
+
+    @abstractmethod
+    async def update_status_agent(self, agent_id: int, status: bool) -> Agents | None:
+        pass
