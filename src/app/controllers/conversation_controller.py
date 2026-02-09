@@ -21,3 +21,21 @@ class ConversationController(BaseController):
             return []
 
         return messages
+
+    async def get_all_conversation_human_fallback_handler(self):
+        conversation_fallback = (
+            await self.conversation_service.get_all_conversation_with_human_fallback()
+        )
+
+        return conversation_fallback
+
+    async def post_direct_message_handler(
+        self, conversation_id: int, text_message: str
+    ):
+        result = await self.conversation_service.post_new_message(
+            conversation_id, text_message
+        )
+        return {
+            "conversation_id": result.conversation_id,
+            "detail": result.response_webhook,
+        }

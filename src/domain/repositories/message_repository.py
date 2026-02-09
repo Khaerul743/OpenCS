@@ -22,7 +22,9 @@ class MessageRepository(IMessageRepository):
     ) -> list[Messages] | None:
         result = (
             await self.db.table("Messages")
-            .select("*")
+            .select(
+                "id,conversation_id, message_type, content, sender_type, created_at"
+            )
             .eq("conversation_id", conversation_id)
             .order("created_at")
             .execute()

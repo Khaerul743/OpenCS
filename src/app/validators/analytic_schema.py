@@ -1,14 +1,13 @@
 from datetime import datetime
 from typing import Optional
 
-from .base import BaseEntity
+from pydantic import BaseModel
 
 
-class AgentAnalytics(BaseEntity):
-    agent_id: int
-    date: datetime
+class InsertAgentAnalytic(BaseModel):
+    date: str
     total_message: int
-    human_takeover: int
+    human_takeover: Optional[int] = 0
     response_time: float
     token: int
     ai_response: str

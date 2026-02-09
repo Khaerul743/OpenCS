@@ -5175,3 +5175,772 @@ Traceback (most recent call last):
   File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
     raise mapped_exc(message) from exc
 httpx.ConnectError
+2026-01-25 20:13:52,149 | ERROR | src.app.middlewares.error_handler | Unexpected error: MessageProcessingUseCase.__init__() missing 1 required positional argument: 'whatsapp_agent_manager'
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 420, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\dependencies\utils.py", line 667, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\core\utils\factory.py", line 15, in _get_controller
+    return ControllerClass(db)
+  File "D:\PROJECT_WA\src\app\controllers\whatsapp_controller.py", line 12, in __init__
+    self.whatsapp_service = WhatsappService(db)
+                            ~~~~~~~~~~~~~~~^^^^
+  File "D:\PROJECT_WA\src\domain\services\whatsapp_service.py", line 43, in __init__
+    self.message_processing_usecase = MessageProcessingUseCase(
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.customer_repo, self.agent_conf_repo, self.whatsapp_agent_manager
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: MessageProcessingUseCase.__init__() missing 1 required positional argument: 'whatsapp_agent_manager'
+2026-01-25 20:18:46,750 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-25 20:18:52,735 | ERROR | src.domain.services.whatsapp_service | {'message': "Could not find the 'avg_response_time' column of 'Agent_analytics' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
+2026-01-25 20:20:55,886 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-25 20:20:58,629 | ERROR | src.domain.services.whatsapp_service | {'message': "Could not find the 'total_token' column of 'Agent_analytics' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
+2026-01-25 20:22:51,082 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-25 20:22:54,589 | ERROR | src.domain.services.whatsapp_service | 1 validation error for AgentAnalytics
+  Input should be a valid dictionary or instance of AgentAnalytics [type=model_type, input_value=[{'id': 1, 'agent_id': 7,...', 'total_tokens': 568}], input_type=list]
+    For further information visit https://errors.pydantic.dev/2.12/v/model_type
+2026-01-25 20:26:04,234 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-25 20:31:15,799 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'missing', 'loc': ('body',), 'msg': 'Field required', 'input': None}]
+2026-01-25 20:33:00,972 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'missing', 'loc': ('body', 'name'), 'msg': 'Field required', 'input': {'email': 'feranproject@gmail.com', 'password': '0987654321'}}]
+2026-01-25 20:33:13,289 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'missing', 'loc': ('body', 'name'), 'msg': 'Field required', 'input': {'email': 'feranproject@gmail.com', 'password': '0987654321'}}]
+2026-01-25 20:33:38,684 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'missing', 'loc': ('body', 'name'), 'msg': 'Field required', 'input': {'email': 'feranproject@gmail.com', 'password': '0987654321'}}]
+2026-01-25 20:38:01,644 | ERROR | src.app.middlewares.error_handler | Unexpected error: 
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 101, in handle_async_request
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 156, in _connect
+    stream = await stream.start_tls(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_backends\anyio.py", line 67, in start_tls
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\user_route.py", line 20, in get_me
+    result = await controller.get_current_user()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\user_controller.py", line 16, in get_current_user
+    return await self.user_service.get_current_user()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\user_service.py", line 15, in get_current_user
+    user = await self.user_repo.get_by_context_user()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\repositories\user_repository.py", line 51, in get_by_context_user
+    await self.db.table("Users")
+    ...<3 lines>...
+    .execute()
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 110, in execute
+    r = await AsyncSingleRequestBuilder(self.request).execute()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 74, in execute
+    r = await self.request.send()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+2026-01-27 21:02:10,460 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:02:13,194 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:06:13,163 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:06:14,544 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:07:35,120 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:07:38,407 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:10:01,907 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:10:06,152 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:12:41,947 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:12:44,954 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:15:42,752 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:15:45,340 | ERROR | src.domain.services.whatsapp_service | Object of type date is not JSON serializable
+2026-01-27 21:18:14,518 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:18:16,091 | ERROR | src.domain.services.whatsapp_service | 1 validation error for InsertAgentAnalytic
+date
+  Input should be a valid string [type=string_type, input_value=datetime.date(2026, 1, 27), input_type=date]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+2026-01-27 21:20:50,013 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:20:54,307 | ERROR | src.domain.services.whatsapp_service | {'message': 'null value in column "created_at" of relation "Agent_analytics" violates not-null constraint', 'code': '23502', 'hint': None, 'details': 'Failing row contains (2, 7, 2026-01-27, 2, Hai! Gimana kabarnya hari ini? Ada yang bisa dibantu? 😄, 0, 4.86, null, 512).'}
+2026-01-27 21:24:07,943 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-27 21:24:10,319 | ERROR | src.domain.services.whatsapp_service | 1 validation error for AgentAnalytics
+human_takeovers
+  Input should be a valid integer [type=int_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/int_type
+2026-01-28 20:12:18,442 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-28 20:54:19,713 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-28 20:54:32,677 | ERROR | src.domain.services.whatsapp_service | 
+2026-01-28 20:56:54,239 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-28 20:56:56,275 | ERROR | src.domain.services.whatsapp_service | 1 validation error for AgentAnalytics
+total_tokens
+  Field required [type=missing, input_value={'id': 5, 'agent_id': 7, ...i ini? Gimana kabarmu?'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+2026-01-28 20:58:44,661 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-01-28 21:01:45,102 | ERROR | src.domain.services.whatsapp_service | {'message': 'null value in column "created_at" of relation "Agent_analytics" violates not-null constraint', 'code': '23502', 'hint': None, 'details': 'Failing row contains (7, 7, 2026-01-28, 2, 3.35, null, 1022, f, Hai! Ada yang bisa aku bantu hari ini? 🌟).'}
+2026-01-28 21:04:05,166 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-02-02 20:09:42,195 | ERROR | src.app.middlewares.error_handler | Unexpected error: 0
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\agent_route.py", line 32, in get_analytic_agent
+    result = await controller.get_agent_analytic()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\agent_controller.py", line 22, in get_agent_analytic
+    result = await self.agent_service.get_agent_analytic()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\agent_service.py", line 84, in get_agent_analytic
+    agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\repositories\agent_repository.py", line 36, in get_agent_id_by_user_id
+    return result.data["Agents"][0]["id"]
+           ~~~~~~~~~~~~~~~~~~~~~^^^
+KeyError: 0
+2026-02-02 20:27:06,856 | ERROR | src.app.middlewares.error_handler | Unexpected error: 
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 101, in handle_async_request
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 156, in _connect
+    stream = await stream.start_tls(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_backends\anyio.py", line 67, in start_tls
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\agent_route.py", line 32, in get_analytic_agent
+    result = await controller.get_agent_analytic()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\agent_controller.py", line 22, in get_agent_analytic
+    result = await self.agent_service.get_agent_analytic()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\agent_service.py", line 84, in get_agent_analytic
+    agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\repositories\agent_repository.py", line 27, in get_agent_id_by_user_id
+    await self.db.table("Businesses")
+    ...<3 lines>...
+    .execute()
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 110, in execute
+    r = await AsyncSingleRequestBuilder(self.request).execute()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 74, in execute
+    r = await self.request.send()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError
+2026-02-03 11:02:57,863 | ERROR | src.app.middlewares.error_handler | Unexpected error: 1 validation error for InsertNewMessage
+content
+  Input should be a valid string [type=string_type, input_value=InsertDirectMessage(text_message='Halo bang'), input_type=InsertDirectMessage]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\conversation_route.py", line 45, in post_message
+    result = await controller.post_direct_message_handler(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        conversation_id, to_number, text_message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\src\app\controllers\conversation_controller.py", line 28, in post_direct_message_handler
+    result = await self.conversation_service.post_new_message(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        conversation_id, to_number, text_message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\src\domain\services\conversation_service.py", line 79, in post_new_message
+    self.raise_error_usecase(send_message_result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\base.py", line 12, in raise_error_usecase
+    raise exception
+  File "D:\PROJECT_WA\src\domain\usecases\whatsapp\send_text_message.py", line 48, in execute
+    InsertNewMessage(
+    ~~~~~~~~~~~~~~~~^
+        sender_type=input_data.sender_type,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        raw_webhook=raw_webhook,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ),
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\pydantic\main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for InsertNewMessage
+content
+  Input should be a valid string [type=string_type, input_value=InsertDirectMessage(text_message='Halo bang'), input_type=InsertDirectMessage]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+2026-02-03 11:11:27,503 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-03 11:11:49,849 | ERROR | src.app.middlewares.error_handler | Unexpected error: 1 validation error for Messages
+id
+  Field required [type=missing, input_value={'conversation_id': 4, 'm...T14:59:50.484222+00:00'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\conversation_route.py", line 32, in get_all_messages
+    result = await controller.get_all_messages_handler(conversation_id)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\conversation_controller.py", line 19, in get_all_messages_handler
+    messages = await self.conversation_service.get_all_messages(conversation_id)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\conversation_service.py", line 57, in get_all_messages
+    messages = await self.message_repo.get_all_message_by_conversation_id(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        conversation_id
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\src\domain\repositories\message_repository.py", line 32, in get_all_message_by_conversation_id
+    messages = [Messages.model_validate(i) for i in result.data]
+                ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\pydantic\main.py", line 716, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Messages
+id
+  Field required [type=missing, input_value={'conversation_id': 4, 'm...T14:59:50.484222+00:00'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+2026-02-03 11:18:52,331 | WARNING | src.app.controllers.auth_controller | 401: {'code': 'UNAUTHORIZED', 'message': 'Missing refresh token'}
+2026-02-03 11:18:52,655 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-03 11:19:35,946 | WARNING | src.app.controllers.auth_controller | 401: {'code': 'UNAUTHORIZED', 'message': 'Missing refresh token'}
+2026-02-03 11:19:35,946 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-04 21:48:57,009 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-04 22:07:26,894 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-04 22:08:17,913 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-04 22:09:17,090 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-04 22:10:45,650 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-04 22:11:25,289 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 10:19:18,720 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 10:20:26,301 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 10:21:41,450 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 10:23:36,824 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 11:18:31,997 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 12:51:10,333 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 12:57:12,407 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 12:57:17,426 | ERROR | src.infrastructure.ai.agent.base.base_node | Error while invoking LLM: Error code: 400 - {'error': {'message': "Invalid parameter: messages with role 'tool' must be a response to a preceeding message with 'tool_calls'.", 'type': 'invalid_request_error', 'param': 'messages.[5].role', 'code': None}}
+2026-02-05 19:59:36,229 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:03:25,897 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:15:22,901 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:16:34,769 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:25:27,849 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:28:18,001 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:42:25,373 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 20:46:17,852 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 21:03:10,685 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 21:09:39,308 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 21:15:52,935 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 21:23:06,976 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-05 21:25:43,609 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 13:50:33,273 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 13:57:36,890 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 13:59:01,375 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:00:24,510 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:02:03,366 | ERROR | src.infrastructure.ai.agent.base.base_node | Error while invoking LLM: Connection error.
+2026-02-06 14:03:10,346 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:07:44,488 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:18:18,697 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:25:20,953 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:31:42,355 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:43:26,072 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:46:40,966 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:54:47,602 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 14:55:42,462 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 15:01:30,489 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 15:01:59,824 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 15:19:55,205 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 21:19:49,014 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 21:24:38,451 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 21:52:09,944 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 21:57:11,887 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 22:00:16,518 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 22:02:15,053 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-06 22:06:15,076 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-07 17:51:23,142 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-07 17:53:30,373 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-07 17:55:49,747 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-07 17:58:30,175 | ERROR | src.infrastructure.ai.agent.base.base_node | Error while invoking LLM: Error code: 400 - {'error': {'message': "Invalid parameter: messages with role 'tool' must be a response to a preceeding message with 'tool_calls'.", 'type': 'invalid_request_error', 'param': 'messages.[1].role', 'code': None}}
+2026-02-07 18:08:50,679 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-07 18:10:44,053 | ERROR | src.infrastructure.ai.agent.base.base_node | Error while invoking LLM: Error code: 400 - {'error': {'message': "Invalid parameter: messages with role 'tool' must be a response to a preceeding message with 'tool_calls'.", 'type': 'invalid_request_error', 'param': 'messages.[1].role', 'code': None}}
+2026-02-08 13:54:47,997 | WARNING | src.domain.services.auth_service | khaerul@gmail.com login failed: Unexpected error while authenticate the user: [Errno 11001] getaddrinfo failed
+2026-02-08 13:54:48,005 | ERROR | src.app.middlewares.error_handler | Unexpected error: [Errno 11001] getaddrinfo failed
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection_pool.py", line 236, in handle_async_request
+    response = await connection.handle_async_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        pool_request.request
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 101, in handle_async_request
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 78, in handle_async_request
+    stream = await self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_async\connection.py", line 124, in _connect
+    stream = await self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_backends\auto.py", line 31, in connect_tcp
+    return await self._backend.connect_tcp(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_backends\anyio.py", line 113, in connect_tcp
+    with map_exceptions(exc_map):
+         ~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 430, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 316, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\routes\auth_route.py", line 32, in login
+    result = await controller.login_handler(response, payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\app\controllers\auth_controller.py", line 48, in login_handler
+    raise e
+  File "D:\PROJECT_WA\src\app\controllers\auth_controller.py", line 42, in login_handler
+    result = await self.auth_service.login_handler(response, payload)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\auth_service.py", line 92, in login_handler
+    self.raise_error_usecase(auth_user)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\services\base.py", line 12, in raise_error_usecase
+    raise exception
+  File "D:\PROJECT_WA\src\domain\usecases\auth\authenticate_user.py", line 46, in execute
+    get_user = await self.user_repository.get_user_by_email(input_data.email)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\domain\repositories\user_repository.py", line 64, in get_user_by_email
+    await self.db.table("Users")
+    ...<3 lines>...
+    .execute()
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 110, in execute
+    r = await AsyncSingleRequestBuilder(self.request).execute()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\postgrest\_async\request_builder.py", line 74, in execute
+    r = await self.request.send()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1540, in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\starb\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 162, in __exit__
+    self.gen.throw(value)
+    ~~~~~~~~~~~~~~^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 11001] getaddrinfo failed
+2026-02-08 13:56:05,713 | WARNING | src.app.middlewares.error_handler | Validation Error: [{'type': 'json_invalid', 'loc': ('body', 1141), 'msg': 'JSON decode error', 'input': {}, 'ctx': {'error': "Expecting ',' delimiter"}}]
+2026-02-08 13:57:24,306 | WARNING | src.domain.services.whatsapp_service | Agent not found
+2026-02-08 13:59:27,250 | ERROR | src.domain.services.whatsapp_service | 4 validation errors for WhatsappAgentState
+business_name
+  Field required [type=missing, input_value={'messages': [], 'user_me...ai', 'response': 'none'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+business_desc
+  Field required [type=missing, input_value={'messages': [], 'user_me...ai', 'response': 'none'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+business_location
+  Field required [type=missing, input_value={'messages': [], 'user_me...ai', 'response': 'none'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+business_knowladge
+  Field required [type=missing, input_value={'messages': [], 'user_me...ai', 'response': 'none'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/missing
+2026-02-08 14:09:06,370 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-3.5-turbo)
+2026-02-08 14:09:09,276 | ERROR | src.domain.services.whatsapp_service | 2 validation errors for AIMessage
+content.str
+  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_type
+content.list[union[str,dict[any,any]]]
+  Input should be a valid list [type=list_type, input_value=None, input_type=NoneType]
+    For further information visit https://errors.pydantic.dev/2.12/v/list_type
+2026-02-08 14:12:39,387 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 14:27:13,559 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 14:30:34,737 | ERROR | src.domain.services.whatsapp_service | 
+2026-02-08 14:44:53,131 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 14:48:22,454 | WARNING | src.domain.services.whatsapp_service | agent is not active
+2026-02-08 15:11:21,229 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-08 15:12:31,242 | ERROR | src.app.middlewares.error_handler | Custom Error: CONVERSATION_NOT_FOUND
+2026-02-08 21:40:50,330 | WARNING | src.domain.services.whatsapp_service | agent is not active
+2026-02-08 21:41:28,455 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 21:41:31,816 | ERROR | src.domain.services.whatsapp_service | can only concatenate str (not "NoneType") to str
+2026-02-08 21:44:00,080 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 21:50:15,059 | ERROR | src.domain.services.whatsapp_service | 
+2026-02-08 21:50:35,240 | ERROR | src.domain.services.whatsapp_service | 
+2026-02-08 21:51:40,211 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-08 21:53:55,545 | ERROR | src.app.middlewares.error_handler | Custom Error: UNAUTHORIZED
+2026-02-09 11:54:39,687 | ERROR | src.app.middlewares.error_handler | Custom Error: DOCUMENT_KNOWLADGE_NOT_FOUND
+2026-02-09 11:55:41,750 | INFO | src.core.utils.save_file | Created directory: documents/user_4/agent_7
+2026-02-09 11:55:42,084 | INFO | src.core.utils.save_file | Saved file: documents/user_4/agent_7\Autobiography.pdf (type: pdf)
+2026-02-09 11:55:45,312 | INFO | src.infrastructure.vectorstore.chroma_db | Successfully loaded document: Autobiography.pdf
+2026-02-09 12:04:36,429 | INFO | src.core.utils.save_file | Deleted file: documents/user_4/agent_7\Autobiography.pdf
+2026-02-09 12:08:12,579 | ERROR | src.app.middlewares.error_handler | Custom Error: DOCUMENT_KNOWLADGE_NOT_FOUND

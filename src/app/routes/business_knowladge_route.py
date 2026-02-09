@@ -10,7 +10,7 @@ from src.core.utils.factory import controller_factory
 from src.core.utils.response import success_response
 from src.core.utils.security import jwtHandler
 
-router = APIRouter(prefix="/api/business_knowladge", tags=["business"])
+router = APIRouter(prefix="/api/business_knowladge", tags=["business_knowladge"])
 
 get_business_knowladge_controller = controller_factory(BusinessKnowladgeController)
 

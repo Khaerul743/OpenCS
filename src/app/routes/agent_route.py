@@ -9,15 +9,25 @@ from src.core.utils.security import jwtHandler
 
 router = APIRouter(prefix="/api/agent", tags=["agent"])
 
-get_business_knowladge_controller = controller_factory(AgentController)
+get_agent_controller = controller_factory(AgentController)
 
 
 @router.post("", status_code=status.HTTP_200_OK)
-async def get_all_business_knowladge_by_business_id(
+async def create_agent(
     payload: CreateAgentIn,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
-    controller: AgentController = Depends(get_business_knowladge_controller),
+    controller: AgentController = Depends(get_agent_controller),
 ):
     result = await controller.create_new_agent_handler(payload)
     return success_response(result, "Create new agent is successfully")
+
+
+@router.get("/analytic/me", status_code=status.HTTP_200_OK)
+async def get_analytic_agent(
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    result = await controller.get_agent_analytic()
+    return success_response(result, "Get analytic agent is successfully")

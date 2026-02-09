@@ -17,3 +17,14 @@ class AgentController(BaseController):
 
         except Exception as e:
             raise e
+
+    async def get_agent_analytic(self):
+        result = await self.agent_service.get_agent_analytic()
+
+        return {
+            "total_tokens": result.total_tokens,
+            "total_messages": result.total_messages,
+            "total_human_takeovers": result.total_human_takeovers,
+            "avg_response_time": result.avg_response_time,
+            "response_rate": result.response_rate,
+        }

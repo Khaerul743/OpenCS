@@ -5,19 +5,24 @@ from src.app.validators.whatsapp_schema import FilteredPayload, WebhookPayload
 from src.domain.repositories import (
     AgentConfigurationRepository,
     AgentRepository,
+    AnalyticsRepository,
     BusinessRepository,
     ConversationRepository,
     CustomerRepository,
+    HumanFallbackRepository,
     MessageRepository,
 )
 from src.domain.usecases.whatsapp import (
+    HumanFallbackUseCase,
     MessageProcessingUseCase,
     MessageProcessingUseCaseInput,
+    SaveConversationInput,
+    SaveConversationUseCase,
     SendTextMessage,
     SendTextMessageInput,
 )
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
-from src.infrastructure.ai.agent.whatsapp_agent import WhatsappAgentState
+from src.infrastructure.ai.agent.wa_agent import WhatsappAgentState
 from src.infrastructure.meta import WhatsappManager
 
 from .base import BaseService
@@ -34,6 +39,8 @@ class WhatsappService(BaseService):
         self.agent_conf_repo = AgentConfigurationRepository(db)
         self.conversation_repo = ConversationRepository(db)
         self.message_repo = MessageRepository(db)
+        self.analytic_repo = AnalyticsRepository(db)
+        self.human_fallback_repo = HumanFallbackRepository(db)
 
         # dependencies
         self.whatsapp_manager = WhatsappManager()
@@ -41,10 +48,20 @@ class WhatsappService(BaseService):
 
         # usecase
         self.message_processing_usecase = MessageProcessingUseCase(
-            self.customer_repo, self.agent_conf_repo, self.whatsapp_agent_manager
+            self.customer_repo,
+            self.agent_conf_repo,
+            self.analytic_repo,
+            self.whatsapp_agent_manager,
         )
         self.send_text_message_usecase = SendTextMessage(
-            self.conversation_repo, self.message_repo, self.whatsapp_manager
+            self.conversation_repo,
+            self.message_repo,
+            self.customer_repo,
+            self.whatsapp_manager,
+        )
+        self.human_fallback_usecase = HumanFallbackUseCase(self.human_fallback_repo)
+        self.save_conversation_usecase = SaveConversationUseCase(
+            self.conversation_repo, self.message_repo, self.human_fallback_usecase
         )
 
     def _get_detail_message(
@@ -144,28 +161,43 @@ class WhatsappService(BaseService):
             if message_processing_result_data is None:
                 raise RuntimeError("Message processing usecase did not returned data")
 
-            send_text_message_result = await self.send_text_message_usecase.execute(
-                SendTextMessageInput(
+            print(f"Message processing result: \n{message_processing_result_data}")
+            save_conversation_result = await self.save_conversation_usecase.execute(
+                SaveConversationInput(
                     agent.business_id,
                     agent.id,
-                    customer_id=message_processing_result_data.customer_id,
-                    to_number=filtered_payload.from_number,
-                    text_message=message_processing_result_data.text_message,
-                    agent_response=message_processing_result_data.response,
-                    raw_webhook=payload,
+                    message_processing_result_data.customer_id,
+                    message_processing_result_data.text_message,
+                    payload,
+                    message_processing_result_data.detail_agent_output,
+                )
+            )
+
+            if not save_conversation_result.is_success():
+                self.raise_error_usecase(save_conversation_result)
+
+            save_conversation_data = save_conversation_result.get_data()
+
+            if save_conversation_data is None:
+                raise RuntimeError("Save conversation usecase did not returned data")
+
+            send_text_message_result = await self.send_text_message_usecase.execute(
+                SendTextMessageInput(
+                    conversation_id=save_conversation_data.conversation_id,
+                    text_message=message_processing_result_data.response,
+                    sender_type="ai",
                 )
             )
 
             if not send_text_message_result.is_success():
                 self.raise_error_usecase(send_text_message_result)
 
-            print(send_text_message_result.get_data())
-
         except RuntimeWarning as e:
             self.logger.warning(str(e))
 
         except Exception as e:
             self.logger.error(str(e))
+            raise e
 
         finally:
             return {"status": "receive"}

@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 
 from src.app.validators.message_schema import InsertNewMessage
 from src.app.validators.whatsapp_schema import WebhookPayload
+from src.core.exceptions.whatsapp_exceptions import ConversationNotFound
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import (
     IConversationRepository,
+    ICustomerRepository,
     IMessageRepository,
 )
 from src.infrastructure.meta import WhatsappManager
@@ -13,20 +15,14 @@ from src.infrastructure.meta import WhatsappManager
 
 @dataclass
 class SendTextMessageInput:
-    business_id: int | None
-    agent_id: int
-    customer_id: int
-    to_number: str
+    conversation_id: int
+    sender_type: Literal["ai", "human_admin", "customer"]
     text_message: str
-    agent_response: str
-    raw_webhook: WebhookPayload
 
 
 @dataclass
 class SendTextMessageOutput:
     conversation_id: int
-    customer_message_id: int
-    agent_message_id: int
     response_webhook: dict[str, Any]
 
 
@@ -35,54 +31,47 @@ class SendTextMessage(BaseUseCase[SendTextMessageInput, SendTextMessageOutput]):
         self,
         conversation_repo: IConversationRepository,
         message_repo: IMessageRepository,
+        customer_repo: ICustomerRepository,
         whatsapp_manager: WhatsappManager,
     ):
         self.conversation_repo = conversation_repo
         self.message_repo = message_repo
+        self.customer_repo = customer_repo
         self.whatsapp_manager = whatsapp_manager
 
     async def execute(
         self, input_data: SendTextMessageInput
     ) -> UseCaseResult[SendTextMessageOutput]:
         try:
-            raw_webhook = input_data.raw_webhook.model_dump()
+            raw_webhook = {"type": "Direct response"}
 
-            # get or insert conversation
-            conversation = await self.conversation_repo.get_or_create_conversation(
-                input_data.business_id, input_data.agent_id, input_data.customer_id
-            )
-
-            # Insert customer message
-            customer_message = await self.message_repo.insert_new_message(
-                conversation.id,
+            # Insert message
+            agent_message = await self.message_repo.insert_new_message(
+                input_data.conversation_id,
                 InsertNewMessage(
-                    sender_type="customer",
+                    sender_type=input_data.sender_type,
                     message_type="text",
                     content=input_data.text_message,
                     raw_webhook=raw_webhook,
                 ),
             )
 
-            # Insert agent message
-            agent_message = await self.message_repo.insert_new_message(
-                conversation.id,
-                InsertNewMessage(
-                    sender_type="ai",
-                    message_type="text",
-                    content=input_data.agent_response,
-                    raw_webhook=raw_webhook,
-                ),
+            # Get customer phone number
+            phone_number = await self.customer_repo.get_phone_number_by_conversation_id(
+                input_data.conversation_id
             )
+            if phone_number is None:
+                return UseCaseResult.error_result(
+                    "Conversation not found", ConversationNotFound()
+                )
 
             result = self.whatsapp_manager.send_text_message(
-                input_data.to_number, input_data.agent_response
+                phone_number, input_data.text_message
             )
 
             return UseCaseResult.success_result(
                 SendTextMessageOutput(
-                    conversation_id=conversation.id,
-                    customer_message_id=customer_message.id,
-                    agent_message_id=agent_message.id,
+                    conversation_id=input_data.conversation_id,
                     response_webhook=result,
                 )
             )

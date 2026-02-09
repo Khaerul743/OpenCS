@@ -10,6 +10,22 @@ class ConversationRepository(IConversationRepository):
     def __init__(self, db: AsyncClient):
         self.db = db
 
+    async def get_conversation_by_id(
+        self, conversation_id: int
+    ) -> Conversations | None:
+        result = (
+            await self.db.table("Conversations")
+            .select("*")
+            .eq("id", conversation_id)
+            .maybe_single()
+            .execute()
+        )
+
+        if result is None:
+            return None
+
+        return Conversations.model_validate(result.data)
+
     async def insert_new_conversation(
         self,
         customer_id: int,
@@ -54,7 +70,7 @@ class ConversationRepository(IConversationRepository):
     ) -> list[dict] | None:
         result = (
             await self.db.table("Conversations")
-            .select("*, Customers(name)")
+            .select("*, Customers(name, phone_number)")
             .eq("business_id", business_id)
             .execute()
         )
@@ -66,6 +82,7 @@ class ConversationRepository(IConversationRepository):
 
         for i in result.data:
             i["username"] = i["Customers"]["name"]
+            i["phone_number"] = i["Customers"]["phone_number"]
             del i["Customers"]
 
             list_conversations.append(i)

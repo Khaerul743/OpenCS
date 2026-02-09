@@ -298,28 +298,38 @@ class BaseNode:
         return tokens
 
     def estimate_structured_output_tokens(
-        self, prompt: str, response_content: str = ""
+        self, msg: list, response_content: str = ""
     ) -> int:
         """Estimate tokens for structured output calls"""
         try:
-            input_tokens = self._estimate_tokens(prompt)
+            msg_str = [i.content for i in msg]
+            input_tokens = self._estimate_tokens("\n".join(msg_str))
             output_tokens = (
                 self._estimate_tokens(response_content) if response_content else 50
             )
+            self._sum_token(input_tokens + output_tokens + 20)
             return input_tokens + output_tokens + 20
         except Exception as e:
             self.logger.warning(f"Error estimating structured output tokens: {str(e)}")
             return 100
 
-    def get_all_previous_messages(self, messages: Sequence[BaseMessage]):
-        all_previous_messages = messages
-        print(f"LEN: {len(all_previous_messages)}")
+    def get_all_previous_messages(
+        self, messages: Sequence[BaseMessage], max_trim: int = 0
+    ):
+        if max_trim != 0:
+            all_previous_messages = messages[-max_trim:]
+        else:
+            all_previous_messages = messages
+
         return all_previous_messages
 
     def get_prompt_setup(
-        self, agent_prompt: List[BaseMessage], state_messages: Sequence[BaseMessage]
+        self,
+        agent_prompt: List[BaseMessage],
+        state_messages: Sequence[BaseMessage],
+        max_trim: int = 0,
     ) -> List[Any]:
-        all_previous_messages = self.get_all_previous_messages(state_messages)
+        all_previous_messages = self.get_all_previous_messages(state_messages, max_trim)
         setup_prompt: list[Any] = (
             [agent_prompt[0]] + list(all_previous_messages) + [agent_prompt[1]]
         )

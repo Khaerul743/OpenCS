@@ -16,3 +16,13 @@ class ICustomerRepository(ABC):
         self, business_id: int
     ) -> list[Customers]:
         pass
+
+    @abstractmethod
+    async def get_customer_status_agent_by_agent_id(self, agent_id: int) -> bool | None:
+        pass
+
+    @abstractmethod
+    async def get_phone_number_by_conversation_id(
+        self, conversation_id: int
+    ) -> str | None:
+        pass

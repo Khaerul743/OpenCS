@@ -6,6 +6,7 @@ from .businesses import Business
 from .conversations import Conversations
 from .customers import Customers
 from .document_knowladges import Document_knowladge
+from .human_fallback import Human_Fallback
 from .messages import Messages
 from .users import User
 
@@ -20,4 +21,5 @@ __all__ = [
     "Conversations",
     "Messages",
     "Agent_configuration",
+    "Human_Fallback",
 ]

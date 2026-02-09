@@ -23,3 +23,14 @@ class WhatsappBadRequest(BaseCustomeException):
                 "message": "Bad request",
             },
         )
+
+
+class ConversationNotFound(BaseCustomeException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "code": "CONVERSATION_NOT_FOUND",
+                "message": "Conversation not found, please enter the right id",
+            },
+        )

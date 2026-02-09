@@ -2,14 +2,20 @@ from supabase import AsyncClient
 
 from src.app.validators.agent_schema import CreateAgentIn
 from src.core.context.request_context import current_user_id
+from src.core.exceptions.agent_exception import AgentNotFound
 from src.core.exceptions.auth_exception import UnauthorizedException
 from src.core.exceptions.business_exception import BusinessNotFound
 from src.domain.repositories import (
     AgentConfigurationRepository,
     AgentRepository,
+    AnalyticsRepository,
     BusinessRepository,
 )
 from src.domain.usecases.agent import CreateAgentUseCase, CreateAgentUseCaseInput
+from src.domain.usecases.analytic import (
+    GetAgentAnalyticsInput,
+    GetAgentAnalyticsUseCase,
+)
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
 
 from .base import BaseService
@@ -23,6 +29,7 @@ class AgentService(BaseService):
         self.agent_repo = AgentRepository(self.db)
         self.agent_conf_repo = AgentConfigurationRepository(db)
         self.business_repo = BusinessRepository(self.db)
+        self.analytic_repo = AnalyticsRepository(self.db)
 
         # dependencies
         self.whatsapp_agent_manager = whatsapp_agent_manager
@@ -31,6 +38,7 @@ class AgentService(BaseService):
         self.create_agent_usecase = CreateAgentUseCase(
             self.agent_repo, self.agent_conf_repo, self.whatsapp_agent_manager
         )
+        self.get_agent_analytic_usecase = GetAgentAnalyticsUseCase(self.analytic_repo)
 
         super().__init__(__name__)
 
@@ -67,3 +75,24 @@ class AgentService(BaseService):
         except RuntimeError as e:
             self.logger.error(str(e))
             raise e
+
+    async def get_agent_analytic(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        result = await self.get_agent_analytic_usecase.execute(
+            GetAgentAnalyticsInput(agent_id=agent_id)
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError("Get analytic usecase did not returned the data")
+
+        return result_data

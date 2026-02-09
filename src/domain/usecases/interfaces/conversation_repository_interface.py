@@ -6,6 +6,12 @@ from src.domain.models import Conversations
 
 class IConversationRepository(ABC):
     @abstractmethod
+    async def get_conversation_by_id(
+        self, conversation_id: int
+    ) -> Conversations | None:
+        pass
+
+    @abstractmethod
     async def insert_new_conversation(
         self, customer_id: int, status: Literal["active", "inactive"] = "active"
     ) -> Conversations:

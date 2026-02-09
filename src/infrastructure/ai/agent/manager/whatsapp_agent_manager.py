@@ -1,5 +1,20 @@
 from src.app.validators.agent_schema import AgentConf
-from src.infrastructure.ai.agent.whatsapp_agent import WhatsappAgent
+from src.infrastructure.ai.agent.wa_agent import WhatsappAgent
+from src.infrastructure.ai.agent.wa_agent.schema import BusinessDetailInformation
+
+business_inf = BusinessDetailInformation(
+    business_name="Rusdi store",
+    business_desc="Merupakan salah satu online store paling laris di ngawi selatan",
+    business_location="Ngawi selatan, kec. Rongawi, kab. Rongawi Kuno",
+)
+
+bk = {
+    "owner": {"description": "untuk mengetahui nama owner", "content": "rusdi"},
+    "product": {
+        "description": "product yang tersedia di rusdi barber",
+        "content": "- Gatsby pomade by amba\n- shampo muani maknyus\n- Minyak rambut khas bumi ayu",
+    },
+}
 
 
 class WhatsappAgentManager:
@@ -17,8 +32,8 @@ class WhatsappAgentManager:
                 llm_model=config.llm_model,
                 tone=config.tone,
                 base_prompt=config.base_prompt,
-                include_long_memory=config.include_memory,
-                user_memory_id=config.user_memory_id,
+                business_detail_information=business_inf,
+                business_knowladge=bk,
             )
         return self._agents[business_id]
 
@@ -33,8 +48,8 @@ class WhatsappAgentManager:
                 llm_model=config.llm_model,
                 tone=config.tone,
                 base_prompt=config.base_prompt,
-                include_long_memory=config.include_memory,
-                user_memory_id=config.user_memory_id,
+                business_detail_information=business_inf,
+                business_knowladge=bk,
             )
         return self._agents[phone_number_id]
 

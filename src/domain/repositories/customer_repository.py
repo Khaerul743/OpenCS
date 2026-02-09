@@ -38,3 +38,31 @@ class CustomerRepository(ICustomerRepository):
         list_customers = result = result.data[0]["Agents"]["Customers"]
         customers = [Customers.model_validate(i) for i in list_customers]
         return customers
+
+    async def get_phone_number_by_conversation_id(
+        self, conversation_id: int
+    ) -> str | None:
+        result = await (
+            self.db.table("Conversations")
+            .select("Customers(phone_number)")
+            .eq("id", conversation_id)
+            .maybe_single()
+            .execute()
+        )
+
+        if result is None:
+            return None
+
+        return result.data["Customers"]["phone_number"]
+
+    async def get_customer_status_agent_by_agent_id(self, agent_id: int) -> bool | None:
+        result = (
+            await self.db.table("Customers")
+            .select("enable_ai")
+            .eq("agent_id", agent_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+        return result.data["enable_ai"]

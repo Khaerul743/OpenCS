@@ -32,8 +32,20 @@ class AgentRepository(IAgentRepository):
         )
         if result is None:
             return None
+        return result.data["Agents"]["id"]
 
-        return result.data["Agents"][0]["id"]
+    async def get_status_agent(self, agent_id: int) -> bool | None:
+        result = await (
+            self.db.table("Agents")
+            .select("enable_ai")
+            .eq("id", agent_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+
+        return result.data["enable_ai"]
 
     async def create_agent_by_business_id(
         self, business_id: int, agent_data: InsertAgent
