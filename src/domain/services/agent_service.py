@@ -36,7 +36,7 @@ class AgentService(BaseService):
 
         # Use case
         self.create_agent_usecase = CreateAgentUseCase(
-            self.agent_repo, self.agent_conf_repo, self.whatsapp_agent_manager
+            self.agent_repo, self.agent_conf_repo
         )
         self.get_agent_analytic_usecase = GetAgentAnalyticsUseCase(self.analytic_repo)
 

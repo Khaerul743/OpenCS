@@ -1,5 +1,6 @@
 from .check_status_agent import CheckStatusAgentInput, CheckStatusAgentUseCase
 from .create_agent import CreateAgentUseCase, CreateAgentUseCaseInput
+from .create_agent_obj import CreateAgentObjInput, CreateAgentObjUseCase
 from .delete_document_knowladges_usecase import (
     DeleteDocumentKnowladgeUsecase,
     DeleteDocumentKnowladgeUsecaseInput,
@@ -24,4 +25,6 @@ __all__ = [
     "DeleteDocumentKnowladgeUsecaseInput",
     "CheckStatusAgentInput",
     "CheckStatusAgentUseCase",
+    "CreateAgentObjInput",
+    "CreateAgentObjUseCase",
 ]

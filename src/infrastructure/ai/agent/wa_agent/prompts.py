@@ -6,7 +6,11 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage
 
 from src.infrastructure.ai.agent.utils.tone import get_tone
 
-from .schema import BusinessDetailInformation
+from .schema import (
+    BusinessDetailInformation,
+    BusinessKnowladgeContent,
+    DocumentRagDetail,
+)
 
 load_dotenv()
 
@@ -15,13 +19,15 @@ class WhatsappAgentPrompt:
     def __init__(
         self,
         base_prompt: str,
-        business_knowladge: dict,
+        business_knowladge: dict[str, BusinessKnowladgeContent],
         business_information: BusinessDetailInformation,
+        document_rag_detail: list[DocumentRagDetail],
         tone: Literal["friendly", "formal", "casual", "profesional"],
     ):
         self.base_prompt = base_prompt
         self.business_knowladge = business_knowladge
         self.business_information = business_information
+        self.document_rag_detail = document_rag_detail
         self.tone = get_tone(tone)
 
     def _base_structure(
@@ -115,26 +121,77 @@ WARNING:
     ):
         business_knowladge_str = ""
         for k, v in self.business_knowladge.items():
-            business_knowladge_str += f"key= {k}\n{v['description']}\n"
+            business_knowladge_str += f"category= {k}\n{v.category_description}\n"
+
+        document_rag_detail_str = ""
+        for i in self.document_rag_detail:
+            document_rag_detail_str += f"title= {i.title}\n{i.description}\n"
 
         system_message = f"""
-Kamu adalah asisten yang bertugas untuk memutuskan dalam pengambilan konteks atau informasi yang diperlukan dari sebuah bisnis/perusahaan yang akan digunakan untuk menjawab pertanyaan customer.
-untuk pengambilan konteks itu sendiri terdapat dua cabang tools yang akan diambil. Untuk cabang yang pertama yaitu 'business_knowladge' berisi sebuah list detail informasi perusahaan tersebut, dan untuk cabang yang kedua yaitu berupa document RAG.
-Berikut adalah detail informasi dari business_knowladge:
---
-{business_knowladge_str}
---
+ROLE:
+Kamu adalah 'Context Retrieval Orchestrator'. Tugasmu adalah menganalisis kebutuhan informasi untuk menjawab pertanyaan customer secara efisien (minimalis namun akurat).
 
-INSTRUKSI:
-Pastikan kamu menentukan key untuk mengambil konteks dari business_knowladge yang sesuai berdasarkan apa yang dibutuhkan untuk menjawab pertanyaan customer. Untuk tool document rag kamu hanya perlu menentukan query yang sesuai untuk menjawab pertanyaan dari customer.
+RESOURCES:
+Terdapat dua sumber informasi utama:
+1. [BUSINESS_KNOWLEDGE]: Berupa daftar kategori statis tentang profil bisnis. Gunakan ini jika pertanyaan bersifat umum tentang identitas, kebijakan dasar, atau info operasional tetap.
+   Daftar Category Key yang tersedia:
+   --
+   {business_knowladge_str}
+   --
+
+2. [DOCUMENT_RAG]: Berupa pencarian dokumen dinamis. Gunakan ini jika pertanyaan membutuhkan detail teknis, prosedur spesifik, atau informasi dari dokumen manual yang tebal.
+   Deskripsi Dokumen:
+   --
+   {document_rag_detail_str}
+   --
+
+STRATEGI PENGAMBILAN (STRICT RULES):
+- Ambil informasi HANYA yang relevan. Jika satu sumber sudah cukup, jangan gunakan sumber lainnya.
+- Jika pertanyaan sudah terjawab di [BUSINESS_KNOWLEDGE], kosongkan `rag_query`.
+- Jika pertanyaan memerlukan data dari dokumen, buatlah `rag_query` yang deskriptif dan biarkan `business_knowladge` kosong jika tidak relevan.
+- Jika pertanyaan kompleks, kamu diperbolehkan menggunakan keduanya.
+- Jika tidak ada informasi yang relevan di keduanya, kembalikan list kosong dan query kosong.
+
+OUTPUT FORMAT:
+Kamu harus selalu mengikuti struktur alat 'CallPreparationToolOutput'.
 """
+
         human_message = f"""
-Berikut adalah decision summary dari agent sebelumnya, Gunakan ini untuk membantu kamu dalam mengambil informasi/konteks yang sesuai:
+KONTEKS SEBELUMNYA (Decision Summary):
 {decision_summary_past}
 
-Berikut adalah pertanyaan dari customer:
-{user_message}
+PERTANYAAN CUSTOMER SAAT INI:
+"{user_message}"
+
+TUGAS:
+Berdasarkan konteks di atas, tentukan:
+1. Apakah butuh kategori dari [BUSINESS_KNOWLEDGE]? (Pilih Key-nya saja).
+2. Apakah butuh pencarian di [DOCUMENT_RAG]? (Tulis query-nya).
+3. Berikan alasan singkat kenapa kamu memilih sumber tersebut di `decision_summary`.
 """
+        #         system_message = f"""
+        # Kamu adalah asisten yang bertugas untuk memutuskan dalam pengambilan konteks atau informasi yang diperlukan dari sebuah bisnis/perusahaan yang akan digunakan untuk menjawab pertanyaan customer.
+        # untuk pengambilan konteks itu sendiri terdapat dua cabang tools yang akan diambil. Untuk cabang yang pertama yaitu 'business_knowladge' berisi sebuah list detail informasi perusahaan tersebut, dan untuk cabang yang kedua yaitu berupa document RAG.
+        # Berikut adalah detail informasi dari business_knowladge:
+        # --
+        # {business_knowladge_str}
+        # --
+
+        # Berikut adalah list deskripsi document yang tersedia:
+        # --
+        # {document_description}
+        # --
+
+        # INSTRUKSI:
+        # Pastikan kamu menentukan category yang sesuai untuk mengambil konteks dari business_knowladge berdasarkan apa yang dibutuhkan untuk menjawab pertanyaan customer. Untuk tool document rag kamu hanya perlu menentukan query yang sesuai untuk menjawab pertanyaan dari customer.
+        # """
+        #         human_message = f"""
+        # Berikut adalah decision summary dari agent sebelumnya, Gunakan ini untuk membantu kamu dalam mengambil informasi/konteks yang sesuai:
+        # {decision_summary_past}
+
+        # Berikut adalah pertanyaan dari customer:
+        # {user_message}
+        # """
 
         return self._base_structure(system_message, human_message)
 

@@ -9,4 +9,6 @@ class Business(BaseEntity):
     name: str
     owner_name: Optional[str] = None
     phone_number: str
+    description: str
+    address: str
     updated_at: datetime

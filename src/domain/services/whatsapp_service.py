@@ -6,12 +6,15 @@ from src.domain.repositories import (
     AgentConfigurationRepository,
     AgentRepository,
     AnalyticsRepository,
+    BusinessKnowladgeRepository,
     BusinessRepository,
     ConversationRepository,
     CustomerRepository,
+    DocumentKnowladgeRepository,
     HumanFallbackRepository,
     MessageRepository,
 )
+from src.domain.usecases.agent import CreateAgentObjInput, CreateAgentObjUseCase
 from src.domain.usecases.whatsapp import (
     HumanFallbackUseCase,
     MessageProcessingUseCase,
@@ -41,17 +44,26 @@ class WhatsappService(BaseService):
         self.message_repo = MessageRepository(db)
         self.analytic_repo = AnalyticsRepository(db)
         self.human_fallback_repo = HumanFallbackRepository(db)
-
+        self.document_knowladge_repo = DocumentKnowladgeRepository(db)
+        self.business_knowladge_repo = BusinessKnowladgeRepository(db)
         # dependencies
         self.whatsapp_manager = WhatsappManager()
         self.whatsapp_agent_manager = whatsapp_agent_manager
 
         # usecase
+        self.create_agent_obj_usecase = CreateAgentObjUseCase(
+            self.agent_conf_repo,
+            self.business_repo,
+            self.document_knowladge_repo,
+            self.business_knowladge_repo,
+            self.whatsapp_agent_manager,
+        )
         self.message_processing_usecase = MessageProcessingUseCase(
             self.customer_repo,
             self.agent_conf_repo,
             self.analytic_repo,
             self.whatsapp_agent_manager,
+            self.create_agent_obj_usecase,
         )
         self.send_text_message_usecase = SendTextMessage(
             self.conversation_repo,
@@ -150,7 +162,11 @@ class WhatsappService(BaseService):
             )
             message_processing_result = await self.message_processing_usecase.execute(
                 MessageProcessingUseCaseInput(
-                    agent.id, agent.phone_number_id, customer_data, agent_state
+                    agent.id,
+                    agent.business_id,
+                    agent.phone_number_id,
+                    customer_data,
+                    agent_state,
                 )
             )
 

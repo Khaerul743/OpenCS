@@ -13,6 +13,7 @@ from .models import (
     create_call_preparation_tool_model,
 )
 from .prompts import WhatsappAgentPrompt
+from .schema import BusinessKnowladgeContent
 
 
 class WhatsappAgentNode(BaseNode):
@@ -21,7 +22,7 @@ class WhatsappAgentNode(BaseNode):
         prompt: WhatsappAgentPrompt,
         llm_model: str,
         llm_provider: str,
-        business_knowladge: dict,
+        business_knowladge: dict[str, BusinessKnowladgeContent],
         retrieve_document: RetrieveDocumentTool,
         use_long_memory: bool = False,
     ):
@@ -86,6 +87,8 @@ class WhatsappAgentNode(BaseNode):
         self.con_repeat += 1
         if result_dict["need_more_information"]:
             return {
+                "messages": list(state.messages)
+                + [HumanMessage(content=state.user_message)],
                 "response": result_dict["your_answer"],
                 "confidence_level": result_dict["confidence"],
                 "need_more_information": result_dict["need_more_information"],
@@ -183,7 +186,6 @@ class WhatsappAgentNode(BaseNode):
             messages, create_call_preparation_tool_model(self.business_knowladge_list)
         )
         result_dict = result.model_dump()
-
         # Count token usage
         self.estimate_structured_output_tokens(
             messages, str(result_dict["decision_summary"])
@@ -201,7 +203,7 @@ class WhatsappAgentNode(BaseNode):
             return {"business_knowladge_result": None}
         list_content = ""
         for i in state.business_knowladge_key:
-            list_content += f"key_{i}: {self.business_knowladge[i]['content']}\n"
+            list_content += f"key_{i}: {self.business_knowladge[i].content}\n"
 
         return {"business_knowladge_result": list_content}
 

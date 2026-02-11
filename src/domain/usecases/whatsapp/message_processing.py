@@ -5,6 +5,7 @@ from src.app.validators.agent_schema import AgentConf
 from src.app.validators.analytic_schema import InsertAgentAnalytic
 from src.app.validators.customer_schema import InsertNewCustomer
 from src.domain.models.agent_analytics import AgentAnalytics
+from src.domain.usecases.agent import CreateAgentObjInput, CreateAgentObjUseCase
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import (
     IAgentConfigurationRepository,
@@ -18,6 +19,7 @@ from src.infrastructure.ai.agent.manager import WhatsappAgentManager
 @dataclass
 class MessageProcessingUseCaseInput:
     agent_id: int
+    business_id: int
     phone_number_id: str
     customer_data: InsertNewCustomer
     agent_state: BaseAgentStateModel
@@ -40,11 +42,13 @@ class MessageProcessingUseCase(
         agent_conf_repo: IAgentConfigurationRepository,
         analytic_repo: IAnalyticRepository,
         whatsapp_agent_manager: WhatsappAgentManager,
+        create_agent_obj_usecase: CreateAgentObjUseCase,
     ):
         self.customer_repo: ICustomerRepository = customer_repo
         self.agent_conf_repo = agent_conf_repo
         self.analytic_repo = analytic_repo
         self.whatsapp_agent_manager = whatsapp_agent_manager
+        self.create_agent_obj_usecase = create_agent_obj_usecase
 
     async def execute(
         self, input_data: MessageProcessingUseCaseInput
@@ -63,37 +67,37 @@ class MessageProcessingUseCase(
                     ),
                 )
 
-            # get Agent configuration
-            agent_conf = await self.agent_conf_repo.get_agent_conf_by_agent_id(
-                input_data.agent_id
-            )
-
-            if agent_conf is None:
-                return UseCaseResult.error_result(
-                    "Agent conf not found", RuntimeError("agent conf not found")
-                )
-
             # Get agent from agent manager
-            agent = self.whatsapp_agent_manager.get_or_create_by_phone_number_id(
-                input_data.phone_number_id,
-                AgentConf(
-                    chromadb_path=agent_conf.chromadb_path,
-                    collection_name=agent_conf.collection_name,
-                    llm_provider=agent_conf.llm_provider,
-                    llm_model=agent_conf.llm_model,
-                    tone=agent_conf.tone,
-                    base_prompt=agent_conf.base_prompt,
-                    temperature=agent_conf.temperature,
-                    include_memory=agent_conf.include_memory,
-                    user_memory_id=agent_conf.user_memory_id,
-                ),
+            is_agent_exist = self.whatsapp_agent_manager.exists(
+                input_data.phone_number_id
             )
+
+            if not is_agent_exist:
+                usecase_result = await self.create_agent_obj_usecase.execute(
+                    input_data=CreateAgentObjInput(
+                        business_id=input_data.business_id,
+                        phone_number_id=input_data.phone_number_id,
+                        agent_id=input_data.agent_id,
+                    )
+                )
+                agent_data = usecase_result.get_data()
+                if agent_data is None:
+                    return UseCaseResult.error_result(
+                        "Unexpected error in create agent obj usecase",
+                        usecase_result.get_exception(),
+                    )
+                agent = agent_data.agent
+            else:
+                agent = self.whatsapp_agent_manager.get_agent_by_phone_number_id(
+                    input_data.phone_number_id
+                )
 
             # Execute the agent
             agent_result = agent.execute(input_data.agent_state, customer.wa_id)
             response_time = agent.get_response_time()
             result_message = agent.get_response()
             total_token = agent.get_token_usage()
+            print(agent.show_execute_detail())
             result_message = (
                 "Maaf, sepertinya sistem kami sedang ada gangguan. Mohon coba lagi nanti"
                 if result_message is None

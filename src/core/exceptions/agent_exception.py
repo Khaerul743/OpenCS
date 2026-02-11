@@ -14,6 +14,17 @@ class AgentNotFound(BaseCustomeException):
         )
 
 
+class AgentConfigurationNotFound(BaseCustomeException):
+    def __init__(self, message: str = "Agent configuration not found") -> None:
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "AGENT_CONFIGURATION_NOT_FOUND",
+                "message": message,
+            },
+        )
+
+
 class DocumentKnowladgeNotFound(BaseCustomeException):
     def __init__(self, message: str = "Document knowladge not found") -> None:
         super().__init__(

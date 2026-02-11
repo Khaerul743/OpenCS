@@ -34,6 +34,18 @@ class AgentRepository(IAgentRepository):
             return None
         return result.data["Agents"]["id"]
 
+    async def get_agent_by_business_id(self, business_id: int) -> Agents | None:
+        result = (
+            await self.db.table("Agents")
+            .select("*")
+            .eq("business_id", business_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+        return Agents.model_validate(result.data)
+
     async def get_status_agent(self, agent_id: int) -> bool | None:
         result = await (
             self.db.table("Agents")

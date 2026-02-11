@@ -6,6 +6,7 @@ from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import (
     IAgentConfigurationRepository,
     IAgentRepository,
+    IBusinessRepository,
 )
 from src.infrastructure.ai.agent.manager import WhatsappAgentManager
 
@@ -28,11 +29,9 @@ class CreateAgentUseCase(
         self,
         agent_repo: IAgentRepository,
         agent_conf_repo: IAgentConfigurationRepository,
-        agent_manager: WhatsappAgentManager,
     ):
         self.agent_repo = agent_repo
         self.agent_conf_repo = agent_conf_repo
-        self.agent_manager = agent_manager
 
     async def execute(
         self, input_data: CreateAgentUseCaseInput
@@ -61,9 +60,6 @@ class CreateAgentUseCase(
 
             # Insert agent configuration
             await self.agent_conf_repo.insert_agent_conf(agent_entity.id, agent_conf)
-
-            # Add to agent manager
-            self.agent_manager.get_or_create(input_data.business_id, agent_conf)
 
             return UseCaseResult.success_result(CreateAgentUseCaseOutput(agent_entity))
 

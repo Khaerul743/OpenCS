@@ -6099,3 +6099,61 @@ Traceback (most recent call last):
   File "D:\PROJECT_WA\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
     raise mapped_exc(message) from exc
 httpx.ReadError
+2026-02-10 19:34:50,417 | ERROR | src.app.middlewares.error_handler | Unexpected error: MessageProcessingUseCase.__init__() missing 1 required positional argument: 'create_agent_obj_usecase'
+Traceback (most recent call last):
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 106, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\routing.py", line 420, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File "D:\PROJECT_WA\.venv\Lib\site-packages\fastapi\dependencies\utils.py", line 667, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\PROJECT_WA\src\core\utils\factory.py", line 15, in _get_controller
+    return ControllerClass(db)
+  File "D:\PROJECT_WA\src\app\controllers\whatsapp_controller.py", line 12, in __init__
+    self.whatsapp_service = WhatsappService(db)
+                            ~~~~~~~~~~~~~~~^^^^
+  File "D:\PROJECT_WA\src\domain\services\whatsapp_service.py", line 50, in __init__
+    self.message_processing_usecase = MessageProcessingUseCase(
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.customer_repo,
+        ^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        self.whatsapp_agent_manager,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+TypeError: MessageProcessingUseCase.__init__() missing 1 required positional argument: 'create_agent_obj_usecase'
+2026-02-10 19:40:09,513 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-10 19:42:17,449 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-10 19:43:17,537 | ERROR | src.domain.services.whatsapp_service | 'BusinessKnowladgeContent' object is not subscriptable
+2026-02-10 19:53:59,936 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-10 20:09:50,463 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)
+2026-02-10 20:13:08,020 | INFO | src.infrastructure.ai.agent.base.base_node | Initialized LLM provider: openai (gpt-4o-mini)

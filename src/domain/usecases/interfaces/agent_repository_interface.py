@@ -14,6 +14,10 @@ class IAgentRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_agent_by_business_id(self, business_id: int) -> Agents | None:
+        pass
+
+    @abstractmethod
     async def get_status_agent(self, agent_id: int) -> bool | None:
         pass
 

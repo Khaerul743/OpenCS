@@ -30,24 +30,39 @@ def create_call_preparation_tool_model(business_knowladge: list[str]):
     business_knowladge_type = Literal[tuple(business_knowladge)]
     return create_model(
         "CallPreparationToolOutput",
+        # rag_query=(
+        #     str,
+        #     Field(
+        #         description=(
+        #             "Query untuk tool rag"
+        #             "Tentukan query yang sesuai untuk menjawab pertanyaan customer"
+        #         )
+        #     ),
+        # ),
         rag_query=(
-            str,
+            Optional[str],  # Gunakan Optional
             Field(
-                description=(
-                    "Query untuk tool rag"
-                    "Tentukan query yang sesuai untuk menjawab pertanyaan customer"
-                )
+                default="",  # Kasih default string kosong
+                description="Query untuk RAG. Isi hanya jika butuh mencari di dokumen. Kosongkan jika tidak butuh.",
             ),
         ),
         business_knowladge=(
             List[business_knowladge_type],
             Field(
-                description=(
-                    "key business knowladge"
-                    "Pilih key yang paling relevan untuk menjawab pertanyaan pengguna"
-                )
+                default_factory=list,  # Default list kosong
+                description="List category key. Isi hanya yang relevan. Kosongkan jika tidak ada yang cocok.",
             ),
         ),
+        # business_knowladge=(
+        #     List[business_knowladge_type],
+        #     Field(
+        #         default_factory=list,
+        #         description=(
+        #             "key business knowladge"
+        #             "Pilih category key yang paling relevan untuk menjawab pertanyaan pengguna"
+        #         ),
+        #     ),
+        # ),
         decision_summary=(
             str,
             Field(
