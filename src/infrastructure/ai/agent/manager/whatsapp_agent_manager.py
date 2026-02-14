@@ -78,5 +78,8 @@ class WhatsappAgentManager:
     def exists(self, phone_number_id: str) -> bool:
         return phone_number_id in self._agents
 
+    def remove_agent_by_phone_number_id(self, phone_number_id: str):
+        self._agents.pop(phone_number_id, None)
+
 
 whatsapp_agent_manager = WhatsappAgentManager()

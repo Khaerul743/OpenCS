@@ -1,3 +1,4 @@
+from uuid import UUID
 from supabase import AsyncClient
 
 from src.app.validators.business_knowladge_schema import (
@@ -40,7 +41,7 @@ class BusinessKnowladgeController(BaseController):
             raise e
 
     async def update_business_knowladge_handler(
-        self, business_knowladge_id: int, payload: UpdateBusinessKnowladgeIn
+        self, business_knowladge_id: UUID, payload: UpdateBusinessKnowladgeIn
     ):
         try:
             result = await self.business_knowladge_service.update_business_knowladge(
@@ -54,7 +55,7 @@ class BusinessKnowladgeController(BaseController):
             self._logger.warning(str(e))
             raise e
 
-    async def delete_business_knowladge_handler(self, business_knowladge_id: int):
+    async def delete_business_knowladge_handler(self, business_knowladge_id: UUID):
         try:
             result = await self.business_knowladge_service.delete_business_knowladge(
                 business_knowladge_id

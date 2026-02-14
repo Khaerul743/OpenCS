@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, Form, UploadFile, status
 
 from src.app.controllers import DocumentKnowladgeController
@@ -43,7 +44,7 @@ async def add_document_knowladge(
 
 @router.delete("/me/{document_knowladge_id}", status_code=status.HTTP_200_OK)
 async def delete_document_knowladge(
-    document_knowladge_id: int,
+    document_knowladge_id: UUID,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: DocumentKnowladgeController = Depends(

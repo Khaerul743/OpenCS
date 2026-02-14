@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.app.validators.human_fallback_schema import InsertNewHumanFallback
 from src.app.validators.message_schema import InsertNewMessage
@@ -11,9 +12,9 @@ from .human_fallback import HumanFallbackInput, HumanFallbackUseCase
 
 @dataclass
 class SaveConversationInput:
-    business_id: int | None
-    agent_id: int
-    customer_id: int
+    business_id: UUID | None
+    agent_id: UUID
+    customer_id: UUID
     text_message: str
     raw_webhook: WebhookPayload
     detail_agent_output: dict
@@ -21,7 +22,7 @@ class SaveConversationInput:
 
 @dataclass
 class SaveConversationOutput:
-    conversation_id: int
+    conversation_id: UUID
 
 
 class SaveConversationUseCase(

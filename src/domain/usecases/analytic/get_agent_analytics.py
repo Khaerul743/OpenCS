@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import IAnalyticRepository
@@ -6,7 +7,7 @@ from src.domain.usecases.interfaces import IAnalyticRepository
 
 @dataclass
 class GetAgentAnalyticsInput:
-    agent_id: int
+    agent_id: UUID
 
 
 @dataclass

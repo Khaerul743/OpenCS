@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.app.validators.business_schema import AddBusinessIn
 from src.domain.models import Business
@@ -8,7 +9,7 @@ from src.domain.usecases.interfaces import IBusinessRepository
 
 @dataclass
 class AddBusinessInput:
-    user_id: int
+    user_id: UUID
     business_data: AddBusinessIn
 
 

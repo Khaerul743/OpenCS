@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from postgrest import APIResponse
 from postgrest.base_request_builder import SingleAPIResponse
 from supabase import AsyncClient
@@ -16,7 +18,7 @@ class BusinessRepository(IBusinessRepository):
         self.db = db
         self._logger = get_logger(__name__)
 
-    async def get_business_by_id(self, business_id: int) -> Business | None:
+    async def get_business_by_id(self, business_id: UUID) -> Business | None:
         result = (
             await self.db.table("Businesses")
             .select("*")
@@ -29,7 +31,7 @@ class BusinessRepository(IBusinessRepository):
 
         return Business.model_validate(result.data)
 
-    async def get_business_id_by_user_id(self, user_id: int) -> int | None:
+    async def get_business_id_by_user_id(self, user_id: UUID) -> UUID | None:
         try:
             result = (
                 await self.db.table("Businesses")
@@ -62,13 +64,15 @@ class BusinessRepository(IBusinessRepository):
         return Business.model_validate(result.data)
 
     async def add_business(
-        self, user_id: int, data_business: AddBusinessIn
+        self, user_id: UUID, data_business: AddBusinessIn
     ) -> Business:
         payload = {
             "user_id": user_id,
             "name": data_business.name,
             "owner_name": data_business.owner_name,
             "phone_number": data_business.phone_number,
+            "description": data_business.description,
+            "address": data_business.address,
         }
         result: APIResponse = (
             await self.db.table("Businesses").insert(payload).execute()
@@ -77,7 +81,7 @@ class BusinessRepository(IBusinessRepository):
         return Business.model_validate(result.data[0])
 
     async def update_business_by_id(
-        self, business_id: int, business_data: BusinessUpdateIn
+        self, business_id: UUID, business_data: BusinessUpdateIn
     ) -> Business:
         payload = business_data.dict(exclude_unset=True)
         result = (
@@ -90,7 +94,7 @@ class BusinessRepository(IBusinessRepository):
         return Business.model_validate(result.data[0])
 
     async def update_business_by_user_id(
-        self, user_id: int, business_data: BusinessUpdateIn
+        self, user_id: UUID, business_data: BusinessUpdateIn
     ) -> Business:
         payload = business_data.dict(exclude_unset=True)
         result = (

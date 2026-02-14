@@ -1,10 +1,11 @@
 from typing import Literal, Optional
+from uuid import UUID
 
 from .base import BaseEntity
 
 
 class Agent_configuration(BaseEntity):
-    agent_id: int
+    agent_id: UUID
     chromadb_path: Optional[str] = None
     collection_name: Optional[str] = None
     llm_provider: str

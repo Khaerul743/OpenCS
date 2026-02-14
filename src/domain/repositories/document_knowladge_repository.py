@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.app.validators.document_knowladge_schema import AddDocumentKnowladge
@@ -10,7 +12,7 @@ class DocumentKnowladgeRepository(IDocumentKnowladgeRepository):
         self.db = db
 
     async def delete_document_knowladge_by_id_n_agent_id(
-        self, document_knowladge_id: int, agent_id: int
+        self, document_knowladge_id: UUID, agent_id: UUID
     ) -> Document_knowladge | None:
         result = (
             await self.db.table("Document_knowladges")
@@ -25,7 +27,7 @@ class DocumentKnowladgeRepository(IDocumentKnowladgeRepository):
         return Document_knowladge.model_validate(result.data[0])
 
     async def get_all_document_knowladge_by_agent_id(
-        self, agent_id: int
+        self, agent_id: UUID
     ) -> list[Document_knowladge] | None:
         result = (
             await self.db.table("Document_knowladges")
@@ -33,7 +35,7 @@ class DocumentKnowladgeRepository(IDocumentKnowladgeRepository):
             .eq("agent_id", agent_id)
             .execute()
         )
-        if result is None:
+        if len(result.data) == 0:
             return None
 
         document_knowladge_list = []
@@ -43,10 +45,10 @@ class DocumentKnowladgeRepository(IDocumentKnowladgeRepository):
         return document_knowladge_list
 
     async def insert_document_knowladge(
-        self, agent_id: int, document_data: AddDocumentKnowladge
+        self, agent_id: UUID, document_data: AddDocumentKnowladge
     ) -> Document_knowladge:
         payload = document_data.model_dump()
-        payload["agent_id"] = agent_id
+        payload["agent_id"] = str(agent_id)
         result = await self.db.table("Document_knowladges").insert(payload).execute()
 
         return Document_knowladge.model_validate(result.data[0])

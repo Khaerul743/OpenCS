@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.app.validators.agent_schema import AgentConf
 from src.core.exceptions.agent_exception import (
@@ -25,9 +26,9 @@ from src.infrastructure.ai.agent.wa_agent.schema import (
 
 @dataclass
 class CreateAgentObjInput:
-    business_id: int
+    business_id: UUID
     phone_number_id: str
-    agent_id: int
+    agent_id: UUID
 
 
 @dataclass

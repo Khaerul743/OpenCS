@@ -1,3 +1,4 @@
+from uuid import UUID
 from supabase import AsyncClient
 
 from src.app.validators.business_knowladge_schema import (
@@ -29,7 +30,7 @@ class BusinessKnowladgeService(BaseService):
 
         super().__init__(__name__)
 
-    async def _get_business_id(self, user_id: int) -> int | None:
+    async def _get_business_id(self, user_id: UUID) -> UUID | None:
         business_id = await self.business_repo.get_business_id_by_user_id(user_id)
         return business_id
 
@@ -74,7 +75,7 @@ class BusinessKnowladgeService(BaseService):
             raise e
 
     async def update_business_knowladge(
-        self, business_knowladge_id: int, payload: UpdateBusinessKnowladgeIn
+        self, business_knowladge_id: UUID, payload: UpdateBusinessKnowladgeIn
     ):
         user_id = current_user_id.get()
         if user_id is None:
@@ -89,7 +90,7 @@ class BusinessKnowladgeService(BaseService):
         )
         return response_data
 
-    async def delete_business_knowladge(self, business_knowladge_id: int):
+    async def delete_business_knowladge(self, business_knowladge_id: UUID):
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()

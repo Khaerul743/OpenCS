@@ -1,3 +1,4 @@
+from uuid import UUID
 from postgrest.base_request_builder import SingleAPIResponse
 from supabase import AsyncClient
 
@@ -10,7 +11,7 @@ class UserRepository(IUserRepository):
     def __init__(self, db: AsyncClient):
         self.db = db
 
-    async def get_user_by_business_id(self, business_id: int) -> User | None:
+    async def get_user_by_business_id(self, business_id: UUID) -> User | None:
         user_id = current_user_id.get()
         result = (
             await self.db.table("Businesses")
@@ -32,7 +33,7 @@ class UserRepository(IUserRepository):
         result = await self.db.table("Users").select("*").execute()
         return [User.model_validate(row) for row in result.data]
 
-    async def get_user_by_id(self, user_id: int) -> User | None:
+    async def get_user_by_id(self, user_id: UUID) -> User | None:
         result: SingleAPIResponse | None = (
             await self.db.table("Users")
             .select("*")

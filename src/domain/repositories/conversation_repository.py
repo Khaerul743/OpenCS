@@ -1,4 +1,5 @@
 from typing import Literal
+from uuid import UUID
 
 from supabase import AsyncClient
 
@@ -11,7 +12,7 @@ class ConversationRepository(IConversationRepository):
         self.db = db
 
     async def get_conversation_by_id(
-        self, conversation_id: int
+        self, conversation_id: UUID
     ) -> Conversations | None:
         result = (
             await self.db.table("Conversations")
@@ -28,19 +29,19 @@ class ConversationRepository(IConversationRepository):
 
     async def insert_new_conversation(
         self,
-        customer_id: int,
+        customer_id: UUID,
         status: Literal["active"] | Literal["inactive"] = "active",
     ) -> Conversations:
-        payload = {"customer_id": customer_id, "status": status}
+        payload = {"customer_id": str(customer_id), "status": status}
         result = await self.db.table("Conversations").insert(payload).execute()
 
         return Conversations.model_validate(result.data[0])
 
     async def get_or_create_conversation(
         self,
-        business_id: int | None,
-        agent_id: int,
-        customer_id: int,
+        business_id: UUID | None,
+        agent_id: UUID,
+        customer_id: UUID,
         status: Literal["active"] | Literal["inactive"] = "active",
     ) -> Conversations:
         result = await (
@@ -54,9 +55,9 @@ class ConversationRepository(IConversationRepository):
 
         if result is None:
             payload = {
-                "business_id": business_id,
-                "agent_id": agent_id,
-                "customer_id": customer_id,
+                "business_id": str(business_id),
+                "agent_id": str(agent_id),
+                "customer_id": str(customer_id),
                 "status": status,
             }
             result = await self.db.table("Conversations").insert(payload).execute()
@@ -66,7 +67,7 @@ class ConversationRepository(IConversationRepository):
         return Conversations.model_validate(result.data)
 
     async def get_all_conversations_by_business_id(
-        self, business_id: int
+        self, business_id: UUID
     ) -> list[dict] | None:
         result = (
             await self.db.table("Conversations")

@@ -10,7 +10,9 @@ from .get_all_document_knowladge_usecase import (
     GetAllDocumentKnowladgeUsecase,
     GetAllDocumentKnowladgeUsecaseInput,
 )
+from .invoke_agent import InvokeAgentInput, InvokeAgentUseCase
 from .rag_process import RagProcessUseCase, RagProcessUsecaseInput
+from .update_agent import UpdateAgentInput, UpdateAgentUseCase
 
 __all__ = [
     "CreateAgentUseCase",
@@ -27,4 +29,8 @@ __all__ = [
     "CheckStatusAgentUseCase",
     "CreateAgentObjInput",
     "CreateAgentObjUseCase",
+    "UpdateAgentInput",
+    "UpdateAgentUseCase",
+    "InvokeAgentInput",
+    "InvokeAgentUseCase",
 ]

@@ -1,3 +1,4 @@
+from uuid import UUID
 from supabase import AsyncClient
 
 from src.core.context.request_context import current_user_id
@@ -49,7 +50,7 @@ class ConversationService(BaseService):
             self.conversation_repo, self.customer_repo, self.human_fallback_repo
         )
 
-    async def _get_business_id(self, user_id: int) -> int | None:
+    async def _get_business_id(self, user_id: UUID) -> UUID | None:
         business_id = await self.business_repo.get_business_id_by_user_id(user_id)
         return business_id
 
@@ -70,7 +71,7 @@ class ConversationService(BaseService):
 
         return conversations
 
-    async def get_all_messages(self, conversation_id: int):
+    async def get_all_messages(self, conversation_id: UUID):
         messages = await self.message_repo.get_all_message_by_conversation_id(
             conversation_id
         )
@@ -96,7 +97,7 @@ class ConversationService(BaseService):
 
         return conversation_human_fallbacks
 
-    async def post_new_message(self, conversation_id: int, text_message: str):
+    async def post_new_message(self, conversation_id: UUID, text_message: str):
         conversation = await self.conversation_repo.get_conversation_by_id(
             conversation_id
         )
@@ -116,7 +117,7 @@ class ConversationService(BaseService):
 
         return result_data
 
-    async def get_customer_status_agent(self, conversation_id: int):
+    async def get_customer_status_agent(self, conversation_id: UUID):
         conversation = await self.conversation_repo.get_conversation_by_id(
             conversation_id
         )
@@ -138,7 +139,7 @@ class ConversationService(BaseService):
 
         return customer_status_agent
 
-    async def update_customer_status_agent(self, conversation_id: int, status: bool):
+    async def update_customer_status_agent(self, conversation_id: UUID, status: bool):
         conversation = await self.conversation_repo.get_conversation_by_id(
             conversation_id
         )
@@ -160,7 +161,7 @@ class ConversationService(BaseService):
 
         return updated_customer
 
-    async def delete_conversation_fallback(self, conversation_id: int):
+    async def delete_conversation_fallback(self, conversation_id: UUID):
         usc_result = await self.delete_conversation_fallback_usecase.execute(
             DeleteConversationFallbackInput(conversation_id)
         )

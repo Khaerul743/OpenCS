@@ -1,6 +1,6 @@
 from supabase import AsyncClient
 
-from src.app.validators.agent_schema import CreateAgentIn
+from src.app.validators.agent_schema import CreateAgentIn, UpdateAgentIn
 from src.domain.services import AgentService
 
 from .base import BaseController
@@ -37,3 +37,11 @@ class AgentController(BaseController):
         result = await self.agent_service.update_status_agent(status)
 
         return result.model_dump()
+
+    async def update_agent_handler(self, payload: UpdateAgentIn):
+        result = await self.agent_service.update_agent(payload)
+        return result
+
+    async def invoke_agent_handler(self, text_message: str):
+        result = await self.agent_service.invoke_agent(text_message)
+        return {"response": result.response, "detail": result.detail_agent_output}

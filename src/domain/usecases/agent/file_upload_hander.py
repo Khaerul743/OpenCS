@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from fastapi import UploadFile
 
@@ -9,8 +10,8 @@ from src.domain.usecases.base import BaseUseCase, UseCaseResult
 
 @dataclass
 class FileUploadUseCaseInput:
-    user_id: int
-    agent_id: int
+    user_id: UUID
+    agent_id: UUID
     file: UploadFile
 
 

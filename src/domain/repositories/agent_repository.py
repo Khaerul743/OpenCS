@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.app.validators.agent_schema import InsertAgent
@@ -22,7 +24,21 @@ class AgentRepository(IAgentRepository):
 
         return Agents.model_validate(result.data)
 
-    async def get_agent_id_by_user_id(self, user_id: int) -> int | None:
+    async def get_agent_by_user_id(self, user_id: UUID) -> Agents | None:
+        result = (
+            await self.db.table("Businesses")
+            .select(
+                "Agents(id, name, phone_number_id, created_at, fallback_to_human, updated_at)"
+            )
+            .eq("user_id", user_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+        return Agents.model_validate(result.data["Agents"][0])
+
+    async def get_agent_id_by_user_id(self, user_id: UUID) -> UUID | None:
         result = (
             await self.db.table("Businesses")
             .select("Agents(id)")
@@ -32,9 +48,9 @@ class AgentRepository(IAgentRepository):
         )
         if result is None:
             return None
-        return result.data["Agents"]["id"]
+        return result.data["Agents"][0]["id"]
 
-    async def get_agent_by_business_id(self, business_id: int) -> Agents | None:
+    async def get_agent_by_business_id(self, business_id: UUID) -> Agents | None:
         result = (
             await self.db.table("Agents")
             .select("*")
@@ -46,7 +62,7 @@ class AgentRepository(IAgentRepository):
             return None
         return Agents.model_validate(result.data)
 
-    async def get_status_agent(self, agent_id: int) -> bool | None:
+    async def get_status_agent(self, agent_id: UUID) -> bool | None:
         result = await (
             self.db.table("Agents")
             .select("enable_ai")
@@ -60,7 +76,7 @@ class AgentRepository(IAgentRepository):
         return result.data["enable_ai"]
 
     async def create_agent_by_business_id(
-        self, business_id: int, agent_data: InsertAgent
+        self, business_id: UUID, agent_data: InsertAgent
     ) -> Agents:
         payload = agent_data.model_dump()
         payload["business_id"] = business_id
@@ -69,7 +85,7 @@ class AgentRepository(IAgentRepository):
 
         return Agents.model_validate(result.data[0])
 
-    async def update_status_agent(self, agent_id: int, status: bool) -> Agents | None:
+    async def update_status_agent(self, agent_id: UUID, status: bool) -> Agents | None:
         result = (
             await self.db.table("Agents")
             .update({"enable_ai": status})
@@ -80,3 +96,12 @@ class AgentRepository(IAgentRepository):
             return None
 
         return Agents.model_validate(result.data[0])
+
+    async def update_name_agent(self, agent_id: UUID, name: str) -> str:
+        result = (
+            await self.db.table("Agents")
+            .update({"name": name})
+            .eq("id", agent_id)
+            .execute()
+        )
+        return name

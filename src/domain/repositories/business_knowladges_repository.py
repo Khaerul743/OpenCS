@@ -1,3 +1,4 @@
+from uuid import UUID
 from supabase import AsyncClient
 
 from src.app.validators.business_knowladge_schema import (
@@ -16,7 +17,7 @@ class BusinessKnowladgeRepository(IBusinessKnowladgeRepository):
         self._logger = get_logger(__name__)
 
     async def get_all_business_knowladge_by_business_id(
-        self, business_id: int
+        self, business_id: UUID
     ) -> list[BusinessKnowladge] | None:
         try:
             result = (
@@ -40,7 +41,7 @@ class BusinessKnowladgeRepository(IBusinessKnowladgeRepository):
             raise e
 
     async def add_business_knowladge(
-        self, business_id: int, business_knowladge_data: AddBusinessKnowladgeIn
+        self, business_id: UUID, business_knowladge_data: AddBusinessKnowladgeIn
     ) -> BusinessKnowladge:
         try:
             payload = business_knowladge_data.dict()
@@ -56,7 +57,7 @@ class BusinessKnowladgeRepository(IBusinessKnowladgeRepository):
 
     async def update_business_knowladge_by_id(
         self,
-        business_knowladge_id: int,
+        business_knowladge_id: UUID,
         business_knowladge_data: UpdateBusinessKnowladgeIn,
     ) -> BusinessKnowladge:
         try:
@@ -75,7 +76,7 @@ class BusinessKnowladgeRepository(IBusinessKnowladgeRepository):
             raise e
 
     async def delete_business_knowladge_by_id(
-        self, business_id: int, business_knowladge_id: int
+        self, business_id: UUID, business_knowladge_id: UUID
     ):
         try:
             result = (

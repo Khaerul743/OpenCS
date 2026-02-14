@@ -1,6 +1,7 @@
 import logging
 import os
 from typing import List
+from uuid import UUID
 
 from dotenv import load_dotenv
 
@@ -147,7 +148,7 @@ class RAGSystem:
                 "Failed to load documents from directory"
             ) from e
 
-    def list_documents(self) -> List[int]:
+    def list_documents(self) -> List[str]:
         """
         Ambil daftar doc_id unik yang ada di collection
         """
@@ -168,7 +169,7 @@ class RAGSystem:
             # raise ListDocumentsException("Failed to list documents") from e
 
     def add_documents(
-        self, documents: List[Document], doc_id: int, chunk: bool = True
+        self, documents: List[Document], doc_id: UUID, chunk: bool = True
     ) -> List[str]:
         """
         Tambahkan dokumen ke ChromaDB.
@@ -190,14 +191,16 @@ class RAGSystem:
             embeddings = self.embedding.embed_documents(texts)
 
             # Buat ID unik per chunk
-            chunk_ids = [f"{doc_id}_chunk_{i}" for i in range(len(splits))]
+            chunk_ids = [f"{str(doc_id)}_chunk_{i}" for i in range(len(splits))]
 
             # Tambahkan ke Chroma dengan metadata doc_id induk
             self.collection().add(
                 ids=chunk_ids,
                 documents=texts,
                 embeddings=embeddings,
-                metadatas=[{**doc.metadata, "document_id": doc_id} for doc in splits],
+                metadatas=[
+                    {**doc.metadata, "document_id": str(doc_id)} for doc in splits
+                ],
             )
             # logger.info(f"Add document is successfully: document ID {doc_id}")
             return chunk_ids
@@ -236,12 +239,12 @@ class RAGSystem:
                 "Failed to add document to collection"
             ) from e
 
-    def delete_document(self, doc_id: int):
+    def delete_document(self, doc_id: UUID):
         """
         Hapus semua chunk berdasarkan doc_id induk
         """
         try:
-            self.collection().delete(where={"document_id": doc_id})
+            self.collection().delete(where={"document_id": str(doc_id)})
             # logger.info(f"Semua chunk dokumen dengan id {doc_id} berhasil dihapus")
             return
         except Exception as e:

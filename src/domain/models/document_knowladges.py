@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import Literal, Optional
+from uuid import UUID
 
 from .base import BaseEntity
 
 
 class Document_knowladge(BaseEntity):
-    agent_id: Optional[int] = None
+    agent_id: Optional[UUID] = None
     title: str
     description: str
     file_path: str

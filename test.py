@@ -17,26 +17,26 @@
 # print(agent.get_llm_model())
 
 
-import asyncio
-from datetime import datetime
+# import asyncio
+# from datetime import datetime
 
-from src.app.validators.message_schema import InsertNewMessage
-from src.config.supabase import get_supabase, init_supabase
-from src.domain.models import Human_Fallback
-
-
-async def main():
-    await init_supabase()
-    db = get_supabase()
-
-    result = (
-        await db.table("Human_Fallback").delete().eq("conversation_id", 10).execute()
-    )
-
-    print(result)
+# from src.app.validators.message_schema import InsertNewMessage
+# from src.config.supabase import get_supabase, init_supabase
+# from src.domain.models import Human_Fallback
 
 
-asyncio.run(main())
+# async def main():
+#     await init_supabase()
+#     db = get_supabase()
+
+#     result = (
+#         await db.table("Human_Fallback").delete().eq("conversation_id", 10).execute()
+#     )
+
+#     print(result)
+
+
+# asyncio.run(main())
 
 
 # from src.infrastructure.vectorstore.chroma_db import rag_system
@@ -90,36 +90,13 @@ asyncio.run(main())
 #         break
 
 #     print(agent.get_response())
+from pydantic import BaseModel
 
-data = {
-    "object": "whatsapp_business_account",
-    "entry": [
-        {
-            "id": "294934934",
-            "changes": [
-                {
-                    "value": {
-                        "messaging_product": "whatsapp",
-                        "metadata": {
-                            "display_phone_number": "48384",
-                            "phone_number_id": "12345678",
-                        },
-                        "contacts": [
-                            {"profile": {"name": "amba"}, "wa_id": "19139238"}
-                        ],
-                        "messages": [
-                            {
-                                "from": "2487439843",
-                                "id": "843848384",
-                                "timestamp": "WAKTU",
-                                "text": {"body": "inpo product apa aja"},
-                                "type": "text",
-                            }
-                        ],
-                    },
-                    "field": "messages",
-                }
-            ],
-        }
-    ],
-}
+
+class Name(BaseModel):
+    name: str
+    kelas: int
+
+
+agus = Name(name="Agustus", kelas=10)
+print(len(agus.model_dump()))

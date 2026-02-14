@@ -94,7 +94,7 @@ class AuthService(BaseService):
         get_data_user = auth_user.get_data()
         if get_data_user:
             user_data = {
-                "id": get_data_user.id,
+                "id": str(get_data_user.id),
                 "email": get_data_user.email,
                 "role": get_data_user.role,
             }
@@ -145,7 +145,7 @@ class AuthService(BaseService):
 
         new_access_token = self.jwt_handler.create_access_token(
             {
-                "id": user.id,
+                "id": str(user.id),
                 "email": user.email,
                 "role": user.role,
             }

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.core.exceptions.agent_exception import DocumentKnowladgeNotFound
 from src.core.utils.save_file import SaveFileHandler
@@ -10,8 +11,8 @@ from src.infrastructure.vectorstore.chroma_db import RAGSystem
 
 @dataclass
 class DeleteDocumentKnowladgeUsecaseInput:
-    document_knowladge_id: int
-    agent_id: int
+    document_knowladge_id: UUID
+    agent_id: UUID
 
 
 @dataclass

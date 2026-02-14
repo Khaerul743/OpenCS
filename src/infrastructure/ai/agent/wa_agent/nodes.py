@@ -57,7 +57,6 @@ class WhatsappAgentNode(BaseNode):
                 state.conversation_summary,
             )
             self.last_len_messages = len_messages
-            print(f"CON SUMMARY: {self.con_summary}")
 
         messages = self.get_prompt_setup(
             self.prompt.main_llm(state.user_message), state.messages, self.MAX_MESSAGES
@@ -132,7 +131,7 @@ class WhatsappAgentNode(BaseNode):
 
         # Count token usage
         self.estimate_total_tokens(messages, state.user_message, result.content)
-        return {"messages": list(state.messages) + [result]}
+        return {"messages": list(state.messages) + [result], "response": result.content}
 
     def _history_message_process(self, history_messages: Sequence[BaseMessage]):
         history_messages_str = ""
@@ -169,6 +168,7 @@ class WhatsappAgentNode(BaseNode):
         return {
             "decision_summary": result.content,
             "messages": list(state.messages) + [response],
+            "response": response.content,
         }
 
     def update_state_after_main_agent(self, state: WhatsappAgentState):
@@ -208,12 +208,10 @@ class WhatsappAgentNode(BaseNode):
         return {"business_knowladge_result": list_content}
 
     def get_rag_query(self, state: WhatsappAgentState):
-        print(f"state.rag_query: {state.rag_query}")
         if not state.rag_query or state.rag_query == "":
             return {"rag_query_result": None}
 
         tool_result = self.retrieve_document.read_document(state.rag_query)
-        print(f"rag query resutl: {tool_result}")
         return {"rag_query_result": tool_result}
 
     def merge_tool_result(self, state: WhatsappAgentState):

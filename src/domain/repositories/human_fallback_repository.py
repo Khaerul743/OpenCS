@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.app.validators.human_fallback_schema import InsertNewHumanFallback
@@ -10,7 +12,7 @@ class HumanFallbackRepository(IHumanFallbackRepository):
         self.db = db
 
     async def get_all_human_fallback_by_business_id(
-        self, business_id: int
+        self, business_id: UUID
     ) -> list[Human_Fallback] | None:
         result = (
             await self.db.table("Human_Fallback")
@@ -40,7 +42,7 @@ class HumanFallbackRepository(IHumanFallbackRepository):
     async def get_or_insert_new_human_fallback(
         self, payload: InsertNewHumanFallback
     ) -> Human_Fallback:
-        payload_dict = payload.model_dump()
+        payload_dict = payload.model_dump(mode="json")
         human_fallback = (
             await self.db.table("Human_Fallback")
             .select("*")
@@ -56,7 +58,7 @@ class HumanFallbackRepository(IHumanFallbackRepository):
         return Human_Fallback.model_validate(human_fallback.data)
 
     async def delete_human_fallback_by_conversation_id(
-        self, conversation_id: int
+        self, conversation_id: UUID
     ) -> Human_Fallback | None:
         result = (
             await self.db.table("Human_Fallback")

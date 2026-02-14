@@ -1,5 +1,6 @@
 # MASIH BELUM KEPAKE YGY
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.core.exceptions.agent_exception import AgentNotFound
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
@@ -8,7 +9,7 @@ from src.domain.usecases.interfaces import IAgentRepository, ICustomerRepository
 
 @dataclass
 class CheckStatusAgentInput:
-    agent_id: int
+    agent_id: UUID
 
 
 @dataclass

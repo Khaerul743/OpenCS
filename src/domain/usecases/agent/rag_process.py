@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.app.validators.document_knowladge_schema import AddDocumentKnowladge
 from src.domain.models import Document_knowladge
@@ -9,7 +10,7 @@ from src.infrastructure.vectorstore.chroma_db import RAGSystem
 
 @dataclass
 class RagProcessUsecaseInput:
-    agent_id: int
+    agent_id: UUID
     document_data: AddDocumentKnowladge
 
 

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from src.app.validators.analytic_schema import InsertAgentAnalytic
 from src.domain.models import AgentAnalytics
@@ -6,11 +7,11 @@ from src.domain.models import AgentAnalytics
 
 class IAnalyticRepository(ABC):
     @abstractmethod
-    async def get_agent_analytics(self, agent_id: int) -> list[AgentAnalytics] | None:
+    async def get_agent_analytics(self, agent_id: UUID) -> list[AgentAnalytics] | None:
         pass
 
     @abstractmethod
     async def insert_agent_analytic(
-        self, agent_id: int, payload: InsertAgentAnalytic
+        self, agent_id: UUID, payload: InsertAgentAnalytic
     ) -> AgentAnalytics:
         pass

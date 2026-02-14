@@ -1,6 +1,6 @@
 from supabase import AsyncClient
 
-from src.app.validators.agent_schema import CreateAgentIn
+from src.app.validators.agent_schema import CreateAgentIn, UpdateAgentIn
 from src.core.context.request_context import current_user_id
 from src.core.exceptions.agent_exception import AgentNotFound
 from src.core.exceptions.auth_exception import UnauthorizedException
@@ -9,14 +9,25 @@ from src.domain.repositories import (
     AgentConfigurationRepository,
     AgentRepository,
     AnalyticsRepository,
+    BusinessKnowladgeRepository,
     BusinessRepository,
+    DocumentKnowladgeRepository,
 )
-from src.domain.usecases.agent import CreateAgentUseCase, CreateAgentUseCaseInput
+from src.domain.usecases.agent import (
+    CreateAgentObjUseCase,
+    CreateAgentUseCase,
+    CreateAgentUseCaseInput,
+    InvokeAgentInput,
+    InvokeAgentUseCase,
+    UpdateAgentInput,
+    UpdateAgentUseCase,
+)
 from src.domain.usecases.analytic import (
     GetAgentAnalyticsInput,
     GetAgentAnalyticsUseCase,
 )
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
+from src.infrastructure.ai.agent.wa_agent import WhatsappAgentState
 
 from .base import BaseService
 
@@ -30,6 +41,8 @@ class AgentService(BaseService):
         self.agent_conf_repo = AgentConfigurationRepository(db)
         self.business_repo = BusinessRepository(self.db)
         self.analytic_repo = AnalyticsRepository(self.db)
+        self.document_knowladge_repo = DocumentKnowladgeRepository(self.db)
+        self.business_knowladge_repo = BusinessKnowladgeRepository(self.db)
 
         # dependencies
         self.whatsapp_agent_manager = whatsapp_agent_manager
@@ -39,7 +52,21 @@ class AgentService(BaseService):
             self.agent_repo, self.agent_conf_repo
         )
         self.get_agent_analytic_usecase = GetAgentAnalyticsUseCase(self.analytic_repo)
-
+        self.update_agent_usecase = UpdateAgentUseCase(
+            self.agent_repo, self.agent_conf_repo, self.whatsapp_agent_manager
+        )
+        self.create_agent_obj_usecase = CreateAgentObjUseCase(
+            self.agent_conf_repo,
+            self.business_repo,
+            self.document_knowladge_repo,
+            self.business_knowladge_repo,
+            self.whatsapp_agent_manager,
+        )
+        self.invoke_agent_usecase = InvokeAgentUseCase(
+            self.analytic_repo,
+            self.whatsapp_agent_manager,
+            self.create_agent_obj_usecase,
+        )
         super().__init__(__name__)
 
     async def create_new_agent(self, payload: CreateAgentIn):
@@ -125,3 +152,56 @@ class AgentService(BaseService):
             raise AgentNotFound()
 
         return updated_agent
+
+    async def update_agent(self, payload: UpdateAgentIn):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent = await self.agent_repo.get_agent_by_user_id(user_id)
+        if agent is None:
+            raise AgentNotFound()
+
+        result = await self.update_agent_usecase.execute(
+            UpdateAgentInput(
+                agent_id=agent.id,
+                phone_number_id=agent.phone_number_id,
+                agent_data=payload,
+            )
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError("Update agent usecase did not returned the data")
+
+        return result_data.result_data
+
+    async def invoke_agent(self, text_message: str):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent = await self.agent_repo.get_agent_by_user_id(user_id)
+        if agent is None:
+            raise AgentNotFound()
+
+        result = await self.invoke_agent_usecase.execute(
+            InvokeAgentInput(
+                agent.phone_number_id,
+                agent.business_id,
+                agent.id,
+                str(agent.business_id),
+                WhatsappAgentState(messages=[], user_message=text_message),
+            )
+        )
+
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError("Invoke agent usecase did not returned the data")
+
+        return result_data

@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, status
 
 from src.app.controllers import BusinessKnowladgeController
@@ -42,7 +43,7 @@ async def add_business_knowladge(
 
 @router.put("/me/{business_knowladge_id}", status_code=status.HTTP_200_OK)
 async def update_business_knowladge(
-    business_knowladge_id: int,
+    business_knowladge_id: UUID,
     payload: UpdateBusinessKnowladgeIn,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
@@ -58,7 +59,7 @@ async def update_business_knowladge(
 
 @router.delete("/me/{business_knowladge_id}", status_code=status.HTTP_200_OK)
 async def delete_business_knowladge(
-    business_knowladge_id: int,
+    business_knowladge_id: UUID,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: BusinessKnowladgeController = Depends(

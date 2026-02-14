@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import UploadFile
 from supabase import AsyncClient
 
@@ -29,7 +30,7 @@ class DocumentKnowladgeController(BaseController):
         except Exception as e:
             raise e
 
-    async def delete_document_knowladge_handler(self, document_knowladge_id: int):
+    async def delete_document_knowladge_handler(self, document_knowladge_id: UUID):
         try:
             result = await self.document_knowladge_service.delete_document_knowladge(
                 document_knowladge_id

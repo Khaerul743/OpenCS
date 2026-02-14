@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import UploadFile
 from supabase import AsyncClient
 
@@ -89,8 +91,6 @@ class DocumentKnowladgeService(BaseService):
         if file_data is None:
             raise RuntimeError("file upload usecase did not returned the data")
 
-        print(file.filename)
-        print(file_data)
         document_data = AddDocumentKnowladge(
             title=file.filename,
             description=file_description,
@@ -101,17 +101,17 @@ class DocumentKnowladgeService(BaseService):
         rag_result = await self.rag_process_usecase.execute(
             RagProcessUsecaseInput(agent_id, document_data)
         )
-
+        print("Aman bang k")
         if not rag_result.is_success():
             self.raise_error_usecase(rag_result)
-
+        print("Aman bang")
         rag_result_data = rag_result.get_data()
         if rag_result_data is None:
             raise RuntimeError("file rag process usecase did not returned the data")
 
         return rag_result_data.document_data
 
-    async def delete_document_knowladge(self, document_knowladge_id: int):
+    async def delete_document_knowladge(self, document_knowladge_id: UUID):
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()

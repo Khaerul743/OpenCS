@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Literal
+from uuid import UUID
 
 from src.app.validators.message_schema import InsertNewMessage
 from src.app.validators.whatsapp_schema import WebhookPayload
@@ -15,14 +16,14 @@ from src.infrastructure.meta import WhatsappManager
 
 @dataclass
 class SendTextMessageInput:
-    conversation_id: int
+    conversation_id: UUID
     sender_type: Literal["ai", "human_admin", "customer"]
     text_message: str
 
 
 @dataclass
 class SendTextMessageOutput:
-    conversation_id: int
+    conversation_id: UUID
     response_webhook: dict[str, Any]
 
 

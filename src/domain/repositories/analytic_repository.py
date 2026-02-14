@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.app.validators.analytic_schema import InsertAgentAnalytic
@@ -9,7 +11,7 @@ class AnalyticsRepository(IAnalyticRepository):
     def __init__(self, db: AsyncClient):
         self.db = db
 
-    async def get_agent_analytics(self, agent_id: int):
+    async def get_agent_analytics(self, agent_id: UUID):
         result = (
             await self.db.table("Agent_analytics")
             .select("*")
@@ -23,10 +25,10 @@ class AnalyticsRepository(IAnalyticRepository):
         return result_data
 
     async def insert_agent_analytic(
-        self, agent_id: int, payload: InsertAgentAnalytic
+        self, agent_id: UUID, payload: InsertAgentAnalytic
     ) -> AgentAnalytics:
         payload_dict = payload.model_dump(exclude_unset=True)
-        payload_dict["agent_id"] = agent_id
+        payload_dict["agent_id"] = str(agent_id)
         print(payload_dict)
         result = await self.db.table("Agent_analytics").insert(payload_dict).execute()
         return AgentAnalytics.model_validate(result.data[0])

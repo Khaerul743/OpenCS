@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.core.exceptions.whatsapp_exceptions import ConversationNotFound
 from src.domain.models import Human_Fallback
@@ -12,7 +13,7 @@ from src.domain.usecases.interfaces import (
 
 @dataclass
 class DeleteConversationFallbackInput:
-    conversation_id: int
+    conversation_id: UUID
 
 
 @dataclass

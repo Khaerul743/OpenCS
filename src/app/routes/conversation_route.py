@@ -1,3 +1,4 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, status
 
 from src.app.controllers import ConversationController
@@ -24,7 +25,7 @@ async def get_all_conversations(
 
 @router.get("/me/message/{conversation_id}", status_code=status.HTTP_200_OK)
 async def get_all_messages(
-    conversation_id: int,
+    conversation_id: UUID,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: ConversationController = Depends(get_conversation_controller),
@@ -47,7 +48,7 @@ async def get_all_conversation_fallback(
 
 @router.post("/message/post/{conversation_id}")
 async def post_message(
-    conversation_id: int,
+    conversation_id: UUID,
     text_message: InsertDirectMessage,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
@@ -61,7 +62,7 @@ async def post_message(
 
 @router.get("/agent/status/{conversation_id}")
 async def get_customer_status_agent(
-    conversation_id: int,
+    conversation_id: UUID,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: ConversationController = Depends(get_conversation_controller),
@@ -72,7 +73,7 @@ async def get_customer_status_agent(
 
 @router.put("/agent/status/{conversation_id}")
 async def update_customer_status_agent(
-    conversation_id: int,
+    conversation_id: UUID,
     status: bool,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
@@ -88,7 +89,7 @@ async def update_customer_status_agent(
 
 @router.delete("/me/fallback/{conversation_id}", status_code=status.HTTP_200_OK)
 async def delete_conversation_fallback(
-    conversation_id: int,
+    conversation_id: UUID,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: ConversationController = Depends(get_conversation_controller),

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from src.app.validators.agent_schema import AgentConf, CreateAgentIn, InsertAgent
 from src.domain.models import Agents
@@ -13,7 +14,7 @@ from src.infrastructure.ai.agent.manager import WhatsappAgentManager
 
 @dataclass
 class CreateAgentUseCaseInput:
-    business_id: int
+    business_id: UUID
     agent_data: CreateAgentIn
 
 

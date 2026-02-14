@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Literal
+from uuid import UUID
 
 from pydantic import EmailStr
 
@@ -21,7 +22,7 @@ class AuthenticateInput:
 
 @dataclass
 class AuthenticateOutput:
-    id: int
+    id: UUID
     name: str
     email: EmailStr
     password: str

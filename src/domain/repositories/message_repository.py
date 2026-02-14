@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.app.validators.message_schema import InsertNewMessage
@@ -10,15 +12,15 @@ class MessageRepository(IMessageRepository):
         self.db = db
 
     async def insert_new_message(
-        self, conversation_id: int, message_data: InsertNewMessage
+        self, conversation_id: UUID, message_data: InsertNewMessage
     ) -> Messages:
         payload = message_data.model_dump()
-        payload["conversation_id"] = conversation_id
+        payload["conversation_id"] = str(conversation_id)
         result = await self.db.table("Messages").insert(payload).execute()
         return Messages.model_validate(result.data[0])
 
     async def get_all_message_by_conversation_id(
-        self, conversation_id: int
+        self, conversation_id: UUID
     ) -> list[Messages] | None:
         result = (
             await self.db.table("Messages")

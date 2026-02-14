@@ -35,3 +35,13 @@ class AgentConf(BaseModel):
     temperature: Optional[float] = 0.7
     include_memory: bool = False
     user_memory_id: Optional[str] = None
+
+
+# Update Agent
+class UpdateAgentIn(BaseModel):
+    name: Optional[str] = None
+    llm_provider: Optional[str] = None
+    llm_model: Optional[str] = None
+    base_prompt: Optional[str] = None
+    temperature: Optional[float] = None
+    tone: Optional[Literal["friendly", "formal", "casual", "profesional"]] = None
