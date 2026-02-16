@@ -55,6 +55,26 @@ async def get_analytic_agent(
     return success_response(result, "Get analytic agent is successfully")
 
 
+@router.get("/analytic/token-usage-trend/me", status_code=status.HTTP_200_OK)
+async def get_token_usage_trend(
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    result = await controller.get_token_usage_trend_handler()
+    return success_response(result, "Get token usage trend is successfully")
+
+
+@router.get("/analytic/message-usage-trend/me", status_code=status.HTTP_200_OK)
+async def get_message_usage_trend(
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    result = await controller.get_message_usage_trend_handler()
+    return success_response(result, "Get message usage trend is successfully")
+
+
 @router.get("/status/me", status_code=status.HTTP_200_OK)
 async def get_status_agent(
     _: None = Depends(jwtHandler.jwt_required),

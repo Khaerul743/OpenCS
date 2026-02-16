@@ -25,6 +25,10 @@ from src.domain.usecases.agent import (
 from src.domain.usecases.analytic import (
     GetAgentAnalyticsInput,
     GetAgentAnalyticsUseCase,
+    GetTokenUsageTrendInput,
+    GetTokenUsageTrendUseCase,
+    GetMessageUsageTrendInput,
+    GetMessageUsageTrendUseCase,
 )
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
 from src.infrastructure.ai.agent.wa_agent import WhatsappAgentState
@@ -52,6 +56,17 @@ class AgentService(BaseService):
             self.agent_repo, self.agent_conf_repo
         )
         self.get_agent_analytic_usecase = GetAgentAnalyticsUseCase(self.analytic_repo)
+        self.get_token_usage_trend_usecase = GetTokenUsageTrendUseCase(
+            self.analytic_repo
+        )
+        self.get_message_usage_trend_usecase = GetMessageUsageTrendUseCase(
+            self.analytic_repo
+        )
+
+        self.get_message_usage_trend_usecase = GetMessageUsageTrendUseCase(
+            self.analytic_repo
+        )
+
         self.update_agent_usecase = UpdateAgentUseCase(
             self.agent_repo, self.agent_conf_repo, self.whatsapp_agent_manager
         )
@@ -124,6 +139,50 @@ class AgentService(BaseService):
 
         return result_data
 
+    async def get_token_usage_trend(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        result = await self.get_token_usage_trend_usecase.execute(
+            GetTokenUsageTrendInput(agent_id=agent_id)
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError("Get token usage trend usecase did not returned the data")
+
+        return result_data
+
+    async def get_message_usage_trend(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        result = await self.get_message_usage_trend_usecase.execute(
+            GetMessageUsageTrendInput(agent_id=agent_id)
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError(
+                "Get message usage trend usecase did not returned the data"
+            )
+
+        return result_data
+
     async def get_status_agent(self):
         user_id = current_user_id.get()
         if user_id is None:
@@ -173,6 +232,7 @@ class AgentService(BaseService):
             self.raise_error_usecase(result)
 
         result_data = result.get_data()
+
         if result_data is None:
             raise RuntimeError("Update agent usecase did not returned the data")
 

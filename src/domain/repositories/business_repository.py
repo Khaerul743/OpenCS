@@ -6,8 +6,6 @@ from supabase import AsyncClient
 
 from src.app.validators.business_schema import AddBusinessIn, BusinessUpdateIn
 from src.core.context.request_context import current_user_id
-from src.core.exceptions.auth_exception import UnauthorizedException
-from src.core.exceptions.business_exception import BusinessNotFound
 from src.core.utils.logger import get_logger
 from src.domain.models import Business
 from src.domain.usecases.interfaces import IBusinessRepository

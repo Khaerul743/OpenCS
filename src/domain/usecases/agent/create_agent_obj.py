@@ -55,7 +55,6 @@ class CreateAgentObjUseCase(BaseUseCase[CreateAgentObjInput, CreateAgentObjOutpu
         self, input_data: CreateAgentObjInput
     ) -> UseCaseResult[CreateAgentObjOutput]:
         try:
-            
             # Define business detail information
             business = await self.business_repo.get_business_by_id(
                 input_data.business_id
@@ -70,7 +69,6 @@ class CreateAgentObjUseCase(BaseUseCase[CreateAgentObjInput, CreateAgentObjOutpu
                 business_desc=business.description,
                 business_location=business.address,
             )
-
             # Define business knowladge content
             business_knowladge = await self.business_knowladge_repo.get_all_business_knowladge_by_business_id(
                 input_data.business_id

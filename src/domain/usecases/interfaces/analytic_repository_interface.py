@@ -15,3 +15,10 @@ class IAnalyticRepository(ABC):
         self, agent_id: UUID, payload: InsertAgentAnalytic
     ) -> AgentAnalytics:
         pass
+
+    async def get_token_usage_trend(self, agent_id: UUID) -> list[dict] | None:
+        pass
+
+    @abstractmethod
+    async def get_message_usage_trend(self, agent_id: UUID) -> list[dict] | None:
+        pass

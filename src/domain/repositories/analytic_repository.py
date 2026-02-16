@@ -32,3 +32,27 @@ class AnalyticsRepository(IAnalyticRepository):
         print(payload_dict)
         result = await self.db.table("Agent_analytics").insert(payload_dict).execute()
         return AgentAnalytics.model_validate(result.data[0])
+
+    async def get_token_usage_trend(self, agent_id: UUID) -> list[dict] | None:
+        result = (
+            await self.db.table("Agent_analytics")
+            .select("date, token")
+            .eq("agent_id", agent_id)
+            .execute()
+        )
+        if len(result.data) == 0:
+            return None
+
+        return result.data
+
+    async def get_message_usage_trend(self, agent_id: UUID) -> list[dict] | None:
+        result = (
+            await self.db.table("Agent_analytics")
+            .select("date, total_message")
+            .eq("agent_id", agent_id)
+            .execute()
+        )
+        if len(result.data) == 0:
+            return None
+
+        return result.data

@@ -28,7 +28,7 @@ class AgentRepository(IAgentRepository):
         result = (
             await self.db.table("Businesses")
             .select(
-                "Agents(id, name, phone_number_id, created_at, fallback_to_human, updated_at)"
+                "Agents(id, business_id, name, phone_number_id, created_at, fallback_to_human, updated_at)"
             )
             .eq("user_id", user_id)
             .maybe_single()

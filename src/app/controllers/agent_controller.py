@@ -29,6 +29,15 @@ class AgentController(BaseController):
             "response_rate": result.response_rate,
         }
 
+    async def get_token_usage_trend_handler(self):
+        result = await self.agent_service.get_token_usage_trend()
+
+        return result.trend_data
+
+    async def get_message_usage_trend_handler(self):
+        result = await self.agent_service.get_message_usage_trend()
+        return result.trend_data
+
     async def get_status_agent_handler(self):
         result = await self.agent_service.get_status_agent()
         return {"status": result}
