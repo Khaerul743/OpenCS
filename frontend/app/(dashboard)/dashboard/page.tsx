@@ -1,19 +1,18 @@
 "use client";
 
+import { AnalyticsCard } from '@/components/user_dashboard/dashboard/AnalyticsCard';
+import { AnalyticsGrid } from '@/components/user_dashboard/dashboard/AnalyticsGrid';
+import { ConversationList } from '@/components/user_dashboard/dashboard/ConversationList';
+import { DashboardSkeleton } from '@/components/user_dashboard/dashboard/DashboardSkeleton';
+import { TokenChart } from '@/components/user_dashboard/dashboard/TokenChart';
 import {
-    ChevronDown,
-    Clock,
-    MessageSquare,
-    Users,
-    Zap
+  ChevronDown,
+  Clock,
+  MessageSquare,
+  Users,
+  Zap
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { AnalyticsCard } from '../components/dashboard/AnalyticsCard';
-import { AnalyticsGrid } from '../components/dashboard/AnalyticsGrid';
-import { ConversationList } from '../components/dashboard/ConversationList';
-import { DashboardSkeleton } from '../components/dashboard/DashboardSkeleton';
-import { TokenChart } from '../components/dashboard/TokenChart';
-import AppLayout from '../components/layout/AppLayout';
 
 // --- MOCK DATA ---
 
@@ -124,7 +123,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <AppLayout>
+    <>
       <div className="space-y-8">
         
         {/* Page Header */}
@@ -194,6 +193,6 @@ export default function Dashboard() {
         )}
 
       </div>
-    </AppLayout>
+    </>
   );
 }

@@ -1,9 +1,8 @@
 "use client";
 
+import { ChatWindow } from '@/components/user_dashboard/conversations/ChatWindow';
+import { ConversationList } from '@/components/user_dashboard/conversations/ConversationList';
 import { useEffect, useState } from 'react';
-import { ChatWindow } from '../../components/conversations/ChatWindow';
-import { ConversationList } from '../../components/conversations/ConversationList';
-import AppLayout from '../../components/layout/AppLayout';
 
 // --- MOCK DATA ---
 
@@ -112,7 +111,7 @@ export default function ConversationsPage() {
   const fallbackData = selectedConversation?.fallback_requested ? MOCK_FALLBACK : null;
 
   return (
-    <AppLayout>
+    <>
       <div className="h-[calc(100vh-100px)] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex">
         
         {/* Left Panel: List */}
@@ -146,6 +145,6 @@ export default function ConversationsPage() {
         </div>
 
       </div>
-    </AppLayout>
+    </>
   );
 }

@@ -1,10 +1,9 @@
 "use client";
 
+import { AgentCard } from '@/components/user_dashboard/agents/AgentCard';
+import { CreateAgentModal } from '@/components/user_dashboard/agents/CreateAgentModal';
 import { Plus, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { AgentCard } from '../../components/agents/AgentCard';
-import { CreateAgentModal } from '../../components/agents/CreateAgentModal';
-import AppLayout from '../../components/layout/AppLayout';
 
 // --- MOCK DATA ---
 const MOCK_AGENT = {
@@ -68,7 +67,7 @@ export default function AgentsPage() {
   };
 
   return (
-    <AppLayout>
+    <>
       <div className="max-w-5xl mx-auto space-y-8 pb-12">
         
         {/* Page Header */}
@@ -109,6 +108,6 @@ export default function AgentsPage() {
         onClose={() => setIsModalOpen(false)} 
         onSubmit={handleCreateAgent}
       />
-    </AppLayout>
+    </>
   );
 }

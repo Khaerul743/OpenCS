@@ -23,3 +23,5 @@ class LoginIn(AuthBase):
 class LoginOut(AuthBase):
     name: str
     role: Literal["admin", "user"] = "user"
+    access_token: str
+    refresh_token: str

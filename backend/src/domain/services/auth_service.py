@@ -1,8 +1,6 @@
 from typing import Literal
 
 from fastapi import Request, Response
-from supabase import AsyncClient
-
 from src.app.validators.auth_schema import LoginIn, LoginOut, RegisterIn, RegisterOut
 from src.core.exceptions import UnauthorizedException
 from src.core.utils.hash import PasswordHashed
@@ -15,6 +13,7 @@ from src.domain.usecases.auth import (
     RegisterValidation,
     RegisterValidationInput,
 )
+from supabase import AsyncClient
 
 from .base import BaseService
 
@@ -123,7 +122,11 @@ class AuthService(BaseService):
         )
 
         return LoginOut(
-            name=get_data_user.name, email=get_data_user.email, role=get_data_user.role
+            name=get_data_user.name,
+            email=get_data_user.email,
+            role=get_data_user.role,
+            access_token=access_token,
+            refresh_token=refresh_token,
         )
 
     async def refresh_access_token(self, request: Request, response: Response):
