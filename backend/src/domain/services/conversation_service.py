@@ -18,6 +18,8 @@ from src.domain.repositories import (
 from src.domain.usecases.conversation import (
     DeleteConversationFallbackInput,
     DeleteConversationUseCase,
+    GetAllConversationInput,
+    GetAllConversationUseCase,
 )
 from src.domain.usecases.whatsapp import SendTextMessage, SendTextMessageInput
 from src.infrastructure.meta import WhatsappManager
@@ -49,27 +51,37 @@ class ConversationService(BaseService):
         self.delete_conversation_fallback_usecase = DeleteConversationUseCase(
             self.conversation_repo, self.customer_repo, self.human_fallback_repo
         )
+        self.get_all_conversation_usecase = GetAllConversationUseCase(
+            self.conversation_repo, self.business_repo
+        )
 
     async def _get_business_id(self, user_id: UUID) -> UUID | None:
         business_id = await self.business_repo.get_business_id_by_user_id(user_id)
         return business_id
 
-    async def get_all_conversation(self):
+    async def get_all_conversation(self, page: int = 1, limit: int = 10):
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()
 
-        business_id = await self._get_business_id(user_id)
-        if business_id is None:
-            raise BusinessNotFound()
-
-        conversations = (
-            await self.conversation_repo.get_all_conversations_by_business_id(
-                business_id
-            )
+        usc_result = await self.get_all_conversation_usecase.execute(
+            GetAllConversationInput(user_id=user_id, page=page, limit=limit)
         )
+        if not usc_result.is_success():
+            self.raise_error_usecase(usc_result)
 
-        return conversations
+        result_data = usc_result.get_data()
+        if result_data is None:
+            raise RuntimeError(
+                "get all conversation usecase did not return the data"
+            )
+
+        return {
+            "conversations": result_data.conversations,
+            "total": result_data.total,
+            "page": result_data.page,
+            "limit": result_data.limit,
+        }
 
     async def get_all_messages(self, conversation_id: UUID):
         messages = await self.message_repo.get_all_message_by_conversation_id(

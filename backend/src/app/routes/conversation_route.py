@@ -15,11 +15,13 @@ get_conversation_controller = controller_factory(ConversationController)
 
 @router.get("/me/all", status_code=status.HTTP_200_OK)
 async def get_all_conversations(
+    page: int = 1,
+    limit: int = 10,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: ConversationController = Depends(get_conversation_controller),
 ):
-    result = await controller.get_all_conversation_handler()
+    result = await controller.get_all_conversation_handler(page=page, limit=limit)
     return success_response(result, "Get all conversation is successfully")
 
 

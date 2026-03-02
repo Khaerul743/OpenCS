@@ -11,6 +11,10 @@ class IBusinessRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_business_id_by_user_id(self, user_id: UUID) -> UUID | None:
+        pass
+
+    @abstractmethod
     async def add_business(
         self, user_id: UUID, data_business: AddBusinessIn
     ) -> Business:

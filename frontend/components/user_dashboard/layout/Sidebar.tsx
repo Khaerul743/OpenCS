@@ -1,13 +1,13 @@
 import {
-    Bot,
-    Briefcase,
-    FileText,
-    LayoutDashboard,
-    LogOut,
-    MessageSquare,
-    PieChart,
-    Settings,
-    Users
+  Bot,
+  Briefcase,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  MessageSquare,
+  PieChart,
+  Settings,
+  Users
 } from 'lucide-react';
 import React from 'react';
 import { SidebarItem } from './SidebarItem';
@@ -44,7 +44,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
       <div className="flex-1 overflow-y-auto py-4 scrollbar-thin scrollbar-thumb-gray-200">
         
         <SidebarSection title="Main" isCollapsed={isCollapsed}>
-          <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/" isCollapsed={isCollapsed} />
+          <SidebarItem icon={LayoutDashboard} label="Dashboard" href="/dashboard" isCollapsed={isCollapsed} />
           <SidebarItem icon={MessageSquare} label="Conversations" href="/conversations" isCollapsed={isCollapsed} />
         </SidebarSection>
 

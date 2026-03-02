@@ -89,3 +89,52 @@ class ConversationRepository(IConversationRepository):
             list_conversations.append(i)
 
         return list_conversations
+
+    async def get_paginated_conversations_by_business_id(
+        self, business_id: UUID, limit: int, offset: int
+    ) -> tuple[list[dict], int]:
+        # Count total conversations
+        count_result = (
+            await self.db.table("Conversations")
+            .select("id", count="exact")
+            .eq("business_id", business_id)
+            .execute()
+        )
+        total_count = count_result.count or 0
+
+        if total_count == 0:
+            return [], 0
+
+        # Fetch paginated conversations with customer info
+        result = (
+            await self.db.table("Conversations")
+            .select("*, Customers(name, phone_number)")
+            .eq("business_id", business_id)
+            .order("last_message_at", desc=True)
+            .range(offset, offset + limit - 1)
+            .execute()
+        )
+
+        conversations = []
+        for row in result.data:
+            row["username"] = row["Customers"]["name"]
+            row["phone_number"] = row["Customers"]["phone_number"]
+            del row["Customers"]
+
+            # Fetch last message for this conversation
+            last_msg_result = (
+                await self.db.table("Messages")
+                .select("content, sender_type, created_at")
+                .eq("conversation_id", row["id"])
+                .order("created_at", desc=True)
+                .limit(1)
+                .execute()
+            )
+
+            row["last_message"] = (
+                last_msg_result.data[0] if last_msg_result.data else None
+            )
+
+            conversations.append(row)
+
+        return conversations, total_count

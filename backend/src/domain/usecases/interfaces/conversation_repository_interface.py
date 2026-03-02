@@ -33,3 +33,10 @@ class IConversationRepository(ABC):
         self, business_id: UUID
     ) -> list[Conversations] | None:
         pass
+
+    @abstractmethod
+    async def get_paginated_conversations_by_business_id(
+        self, business_id: UUID, limit: int, offset: int
+    ) -> tuple[list[dict], int]:
+        """Returns (conversations_with_last_message, total_count)"""
+        pass
