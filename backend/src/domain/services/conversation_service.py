@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from supabase import AsyncClient
 
 from src.core.context.request_context import current_user_id
@@ -72,12 +73,16 @@ class ConversationService(BaseService):
 
         result_data = usc_result.get_data()
         if result_data is None:
-            raise RuntimeError(
-                "get all conversation usecase did not return the data"
-            )
+            raise RuntimeError("get all conversation usecase did not return the data")
+
+        list_data = []
+        for i in result_data.conversations:
+            del i["agent_id"]
+            del i["business_id"]
+            list_data.append(i)
 
         return {
-            "conversations": result_data.conversations,
+            "conversations": list_data,
             "total": result_data.total,
             "page": result_data.page,
             "limit": result_data.limit,
@@ -89,6 +94,14 @@ class ConversationService(BaseService):
         )
 
         return messages
+
+    async def get_conversation_fallback(self, conversation_id: UUID):
+        conversation_fallback = await self.human_fallback_repo.get_human_fallback_by_id(
+            conversation_id
+        )
+        if conversation_fallback is None:
+            raise ConversationNotFound()
+        return conversation_fallback
 
     async def get_all_conversation_with_human_fallback(self):
         user_id = current_user_id.get()

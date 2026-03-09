@@ -17,30 +17,30 @@
 # print(agent.get_llm_model())
 
 
-import asyncio
-from datetime import datetime
-from uuid import UUID
+# import asyncio
+# from datetime import datetime
+# from uuid import UUID
 
-from src.app.validators.message_schema import InsertNewMessage
-from src.config.supabase import get_supabase, init_supabase
-from src.domain.models import Human_Fallback
-
-
-async def main():
-    await init_supabase()
-    db = get_supabase()
-
-    result = (
-        await db.table("Businesses")
-        .select("*")
-        .eq("id", UUID("06a8a34c-12f8-42c6-bf09-33f2e3a08171"))
-        .maybe_single()
-        .execute()
-    )
-    print(f"result: {result}")
+# from src.app.validators.message_schema import InsertNewMessage
+# from src.config.supabase import get_supabase, init_supabase
+# from src.domain.models import Human_Fallback
 
 
-asyncio.run(main())
+# async def main():
+#     await init_supabase()
+#     db = get_supabase()
+
+#     result = (
+#         await db.table("Businesses")
+#         .select("*")
+#         .eq("id", UUID("06a8a34c-12f8-42c6-bf09-33f2e3a08171"))
+#         .maybe_single()
+#         .execute()
+#     )
+#     print(f"result: {result}")
+
+
+# asyncio.run(main())
 
 
 # from src.infrastructure.vectorstore.chroma_db import rag_system
@@ -94,3 +94,4 @@ asyncio.run(main())
 #         break
 
 #     print(agent.get_response())
+

@@ -7,5 +7,5 @@ from .base import BaseEntity
 
 class Conversations(BaseEntity):
     customer_id: Optional[UUID] = None
-    status: Literal["active", "inactive"] = "active"
+    need_human: bool = False
     last_message_at: datetime

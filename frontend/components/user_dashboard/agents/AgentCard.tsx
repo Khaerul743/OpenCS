@@ -10,7 +10,7 @@ interface AgentCardProps {
     updated_at: string;
     enable_ai: boolean;
   };
-  onSave: (data: Partial<AgentFormData>) => void;
+  onSave: (data: Partial<AgentFormData>) => Promise<void> | void;
   isLoading?: boolean;
 }
 
@@ -41,11 +41,14 @@ export const AgentCard: React.FC<AgentCardProps> = ({
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate network delay for effect
-    await new Promise(resolve => setTimeout(resolve, 800));
-    onSave(formData);
-    setIsSaving(false);
-    setIsDirty(false);
+    try {
+      await onSave(formData);
+      setIsDirty(false);
+    } catch (error) {
+      console.error("Failed to save changes", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReset = () => {

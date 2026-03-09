@@ -10,5 +10,4 @@ class BusinessKnowladge(BaseEntity):
     category: str
     category_description: str
     content: str
-    format: Literal["text", "json", "markdown"] = "text"
     updated_at: datetime

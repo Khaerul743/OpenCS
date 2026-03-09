@@ -39,6 +39,20 @@ class HumanFallbackRepository(IHumanFallbackRepository):
 
         return result_data
 
+    async def get_human_fallback_by_id(
+        self, conversation_id: UUID
+    ) -> Human_Fallback | None:
+        result = (
+            await self.db.table("Human_Fallback")
+            .select("*")
+            .eq("conversation_id", conversation_id)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+        return Human_Fallback.model_validate(result.data)
+
     async def get_or_insert_new_human_fallback(
         self, payload: InsertNewHumanFallback
     ) -> Human_Fallback:

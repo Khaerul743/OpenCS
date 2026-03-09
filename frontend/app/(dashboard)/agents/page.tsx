@@ -2,48 +2,48 @@
 
 import { AgentCard } from '@/components/user_dashboard/agents/AgentCard';
 import { CreateAgentModal } from '@/components/user_dashboard/agents/CreateAgentModal';
-import { Plus, Sparkles } from 'lucide-react';
+import { AgentResponse } from '@/lib/services/agent/types';
+import { AlertCircle, Plus, Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// --- MOCK DATA ---
-const MOCK_AGENT = {
-  status: "success",
-  message: "Agent retrieved",
-  data: {
-    id: "agent-123",
-    name: "Customer Success Bot",
-    enable_ai: true,
-    phone_number_id: "PHONE_ID_55501",
-    fallback_email: "support@example.com",
-    prompt: "You are a helpful customer service agent for a tech company. You should be polite, concise, and professional. Always ask for clarification if the user's request is ambiguous.",
-    llm_model: "gpt-4-turbo",
-    llm_provider: "openai",
-    tone: "professional",
-    temperature: 0.7,
-    created_at: "2023-11-15T10:00:00Z",
-    updated_at: new Date().toISOString()
-  }
-};
-
 export default function AgentsPage() {
-  const [agent, setAgent] = useState<any>(null);
+  const router = useRouter();
+  const [agent, setAgent] = useState<AgentResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initial Fetch Simulation
   useEffect(() => {
-    const timer = setTimeout(() => {
-        // Toggle this logic to test "No Agent" state if needed
-        const hasAgent = true; 
-        if (hasAgent) {
-            setAgent(MOCK_AGENT.data);
-        } else {
-            setAgent(null);
+    const fetchAgent = async () => {
+      try {
+        const response = await fetch('/api/agent');
+        
+        if (response.status === 401) {
+          router.push('/login');
+          return;
         }
+
+        const resData = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 404) {
+             setAgent(null);
+          } else {
+             throw new Error(resData.message || 'Failed to fetch agent data');
+          }
+        } else {
+           setAgent(resData.data || null);
+        }
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred.');
+      } finally {
         setIsLoading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+      }
+    };
+
+    fetchAgent();
+  }, [router]);
 
   const handleCreateAgent = (data: any) => {
     // API Call Mock
@@ -53,17 +53,48 @@ export default function AgentsPage() {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
     };
-    setAgent(newAgent);
+    setAgent(newAgent as AgentResponse);
     setIsModalOpen(false);
   };
 
-  const handleUpdateAgent = (changes: any) => {
-    // API Call Mock
-    setAgent((prev: any) => ({
-        ...prev,
-        ...changes,
-        updated_at: new Date().toISOString()
-    }));
+  const handleUpdateAgent = async (changes: any) => {
+    // If it's only a status toggle enable_ai, just update state (handled differently later)
+    if (Object.keys(changes).length === 1 && 'enable_ai' in changes) {
+        setAgent((prev: any) => prev ? ({
+            ...prev,
+            ...changes,
+            updated_at: new Date().toISOString()
+        }) : prev);
+        return;
+    }
+
+    try {
+        const payload = { ...agent, ...changes };
+        const response = await fetch('/api/agent', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.status === 401) {
+            router.push('/login');
+            return;
+        }
+
+        const resData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(resData.message || 'Failed to update agent parameters');
+        }
+
+        // Do not use resData.data to update UI as the PUT endpoint doesn't return the full agent object
+        setAgent(payload as AgentResponse);
+    } catch (err: any) {
+        alert(err.message || 'An unexpected error occurred while updating the agent.');
+        throw err;
+    }
   };
 
   return (
@@ -79,6 +110,22 @@ export default function AgentsPage() {
         {/* Content */}
         {isLoading ? (
             <AgentCard agent={{} as any} onSave={() => {}} isLoading={true} />
+        ) : error ? (
+            <div className="flex flex-col items-center justify-center min-h-[400px] bg-red-50 rounded-xl border border-red-100 p-8 my-8">
+              <div className="text-red-500 mb-4 bg-red-100 p-4 rounded-full">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-red-900 mb-2">Failed to load agent</h3>
+              <p className="text-red-700 text-center mb-6 max-w-md">
+                {error}
+              </p>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="px-6 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors shadow-sm"
+              >
+                Try Again
+              </button>
+            </div>
         ) : agent ? (
             <AgentCard agent={agent} onSave={handleUpdateAgent} />
         ) : (

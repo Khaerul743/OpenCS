@@ -6,18 +6,38 @@ import {
   LogOut,
   MessageSquare,
   PieChart,
+  Play,
   Settings,
   Users
 } from 'lucide-react';
 import React from 'react';
 import { SidebarItem } from './SidebarItem';
 import { SidebarSection } from './SidebarSection';
+import { redirect } from 'next/dist/server/api-utils';
 
 interface SidebarProps {
   isCollapsed: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
+  async function handleLogout() {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert("Error");
+        return;
+      }
+
+      alert(data.message);
+      // Redirect to /login after successful logout
+      window.location.href = "/login";
+    } catch (error) {
+      console.error(error);
+      alert("Error logging out");
+    }
+  }
   return (
     <aside 
       className={`
@@ -50,6 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 
         <SidebarSection title="Agent Control" isCollapsed={isCollapsed}>
           <SidebarItem icon={Bot} label="Agents" href="/agents" isCollapsed={isCollapsed} />
+          <SidebarItem icon={Play} label="Playground" href="/playground" isCollapsed={isCollapsed} />
           <SidebarItem icon={Users} label="Customers" href="/customers" isCollapsed={isCollapsed} />
           <SidebarItem icon={Briefcase} label="Business Knowledge" href="/business" isCollapsed={isCollapsed} />
           <SidebarItem icon={FileText} label="Document Knowledge" href="/documents" isCollapsed={isCollapsed} />
@@ -74,6 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
              ${isCollapsed ? 'justify-center' : ''}
            `}
            title="Logout"
+           onClick={handleLogout} 
          >
            <LogOut size={20} />
            {!isCollapsed && <span className="font-medium">Logout</span>}

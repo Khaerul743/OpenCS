@@ -41,7 +41,6 @@ class GetAllDocumentKnowladgeUsecase(
             list_document_knowladge = await self.document_knowladge_repo.get_all_document_knowladge_by_agent_id(
                 input_data.agent_id
             )
-            print(f"List docs: {list_document_knowladge}")
             if list_document_knowladge is None:
                 return UseCaseResult.error_result(
                     "Document knowladge is not found", DocumentKnowladgeNotFound()
@@ -49,7 +48,6 @@ class GetAllDocumentKnowladgeUsecase(
 
             list_document_vector = self.rag_system.list_documents()
             list_document_result: list[Document_knowladge] = []
-            print(f"List docs vector: {list_document_vector}")
 
             for i in list_document_knowladge:
                 if str(i.id) in list_document_vector:

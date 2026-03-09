@@ -1,8 +1,6 @@
 from uuid import UUID
 
 from fastapi import UploadFile
-from supabase import AsyncClient
-
 from src.app.validators.document_knowladge_schema import AddDocumentKnowladge
 from src.core.context.request_context import current_user_id
 from src.core.exceptions.agent_exception import AgentNotFound
@@ -20,6 +18,7 @@ from src.domain.usecases.agent import (
     RagProcessUsecaseInput,
 )
 from src.infrastructure.vectorstore.chroma_db import rag_system
+from supabase import AsyncClient
 
 from .base import BaseService
 

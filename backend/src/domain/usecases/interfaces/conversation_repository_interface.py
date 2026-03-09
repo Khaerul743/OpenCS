@@ -40,3 +40,9 @@ class IConversationRepository(ABC):
     ) -> tuple[list[dict], int]:
         """Returns (conversations_with_last_message, total_count)"""
         pass
+
+    @abstractmethod
+    async def update_conversation_status(
+        self, conversation_id: UUID, need_human: bool
+    ) -> Conversations | None:
+        pass

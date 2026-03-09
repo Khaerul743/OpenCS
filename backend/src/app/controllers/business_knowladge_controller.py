@@ -23,7 +23,10 @@ class BusinessKnowladgeController(BaseController):
             list_data = []
             if business_knowladges is not None:
                 for i in business_knowladges:
-                    list_data.append(i.model_dump())
+                    data = i.model_dump()
+                    del data["business_id"]
+                    del data["updated_at"]
+                    list_data.append(data)
 
             return list_data
         except Exception as e:

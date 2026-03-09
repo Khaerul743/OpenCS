@@ -13,6 +13,12 @@ class IHumanFallbackRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_human_fallback_by_id(
+        self, conversation_id: UUID
+    ) -> Human_Fallback | None:
+        pass
+
+    @abstractmethod
     async def get_or_insert_new_human_fallback(
         self, payload: InsertNewHumanFallback
     ) -> Human_Fallback:

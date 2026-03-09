@@ -5,9 +5,14 @@ interface Conversation {
   id: string;
   username: string;
   phone_number: string;
-  status: 'active' | 'closed' | 'pending';
+  need_human: boolean;
   last_message_at: string;
   created_at: string;
+  last_message?: {
+    content: string;
+    sender_type: string;
+    created_at: string;
+  };
 }
 
 interface ConversationListProps {
@@ -19,13 +24,8 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   conversations, 
   isLoading = false 
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-700';
-      case 'pending': return 'bg-yellow-100 text-yellow-700';
-      case 'closed': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
+  const getStatusColor = (needHuman: boolean) => {
+    return needHuman ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700';
   };
 
   if (isLoading) {
@@ -77,8 +77,8 @@ export const ConversationList: React.FC<ConversationListProps> = ({
                   </div>
                 </td>
                 <td className="py-3 px-4">
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(conv.status)}`}>
-                    {conv.status.charAt(0).toUpperCase() + conv.status.slice(1)}
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(conv.need_human)}`}>
+                    {conv.need_human ? 'Needs Human' : 'AI Handled'}
                   </span>
                 </td>
                 <td className="py-3 px-4">

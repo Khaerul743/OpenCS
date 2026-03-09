@@ -41,7 +41,12 @@ class AgentConf(BaseModel):
 class UpdateAgentIn(BaseModel):
     name: Optional[str] = None
     llm_provider: Optional[str] = None
+    fallback_email: Optional[str] = None
     llm_model: Optional[str] = None
     base_prompt: Optional[str] = None
     temperature: Optional[float] = None
     tone: Optional[Literal["friendly", "formal", "casual", "profesional"]] = None
+
+#Invoke agent
+class InvokeAgentIn(BaseModel):
+    text_message: str

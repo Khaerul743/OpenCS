@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, status
 
 from src.app.controllers import ConversationController
@@ -43,6 +44,19 @@ async def get_all_conversation_fallback(
     controller: ConversationController = Depends(get_conversation_controller),
 ):
     result = await controller.get_all_conversation_human_fallback_handler()
+    return success_response(
+        result, "Get all conversation with human fallback is successfully"
+    )
+
+
+@router.get("/me/fallback/{conversation_id}", status_code=status.HTTP_200_OK)
+async def get_conversation_fallback(
+    conversation_id: UUID,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: ConversationController = Depends(get_conversation_controller),
+):
+    result = await controller.get_conversation_fallback_handler(conversation_id)
     return success_response(
         result, "Get all conversation with human fallback is successfully"
     )

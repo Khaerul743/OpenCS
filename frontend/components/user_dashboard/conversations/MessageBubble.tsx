@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface MessageBubbleProps {
   content: string;
@@ -28,7 +30,20 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
               : 'bg-green-600 text-white rounded-tr-sm' // Human
           }
         `}>
-          {content}
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              p: ({node: _, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+              strong: ({node: _, ...props}) => <strong className="font-bold" {...props} />,
+              em: ({node: _, ...props}) => <em className="italic" {...props} />,
+              ul: ({node: _, ...props}) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+              ol: ({node: _, ...props}) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+              li: ({node: _, ...props}) => <li className="pl-1" {...props} />,
+              a: ({node: _, ...props}) => <a className="underline hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer" {...props} />,
+            }}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
         
         <div className="flex items-center gap-1.5 mt-1 px-1">

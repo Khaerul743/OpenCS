@@ -11,6 +11,7 @@ class Agent_configuration(BaseEntity):
     llm_provider: str
     llm_model: str
     base_prompt: Optional[str] = None
+    fallback_email: str
     tone: Literal["friendly", "casual", "profesional", "formal"]
     temperature: Optional[float] = 0.7
     include_memory: bool = False

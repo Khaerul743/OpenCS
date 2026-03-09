@@ -1,4 +1,3 @@
-import { AlertTriangle } from 'lucide-react';
 import React from 'react';
 
 interface ConversationItemProps {
@@ -6,9 +5,8 @@ interface ConversationItemProps {
   username: string;
   phoneNumber: string;
   lastMessageTime: string;
-  status: 'active' | 'closed' | 'pending';
+  status: boolean;
   isActive: boolean;
-  hasFallback: boolean;
   onClick: () => void;
 }
 
@@ -18,16 +16,11 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
   lastMessageTime,
   status,
   isActive,
-  hasFallback,
   onClick,
 }) => {
-  const getStatusColor = (s: string) => {
-    switch (s) {
-      case 'active': return 'bg-green-100 text-green-700';
-      case 'pending': return 'bg-yellow-100 text-yellow-700';
-      case 'closed': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
+  const getStatusColor = (s: boolean) => {
+    if (s) return 'bg-yellow-100 text-yellow-700';
+    return 'bg-green-100 text-green-700';
   };
 
   return (
@@ -50,16 +43,10 @@ export const ConversationItem: React.FC<ConversationItemProps> = ({
       
       <p className="text-xs text-gray-500 mb-2 truncate">{phoneNumber}</p>
       
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mt-2">
         <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wide ${getStatusColor(status)}`}>
-          {status}
+          {status ? 'Needs Human' : 'AI Handled'}
         </span>
-        
-        {hasFallback && (
-          <div className="flex items-center gap-1 text-amber-600" title="Human Intervention Needed">
-            <AlertTriangle size={14} />
-          </div>
-        )}
       </div>
     </div>
   );

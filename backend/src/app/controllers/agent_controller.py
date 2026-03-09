@@ -56,6 +56,7 @@ class AgentController(BaseController):
         return result.model_dump()
 
     async def update_agent_handler(self, payload: UpdateAgentIn):
+        print("KOCAK")
         result = await self.agent_service.update_agent(payload)
         return result
 

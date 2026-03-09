@@ -163,7 +163,7 @@ class AuthService(BaseService):
             samesite=self.samesite,
         )
 
-        return {"status": "success"}
+        return {"status": "success", "access_token": new_access_token}
 
     def remove_cookie_tokens(self, response: Response) -> dict[str, str]:
         # Remove access token

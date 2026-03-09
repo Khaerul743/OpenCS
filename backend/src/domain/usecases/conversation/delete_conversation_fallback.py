@@ -58,6 +58,11 @@ class DeleteConversationUseCase(
                     "Conversation fallback not found", ConversationNotFound()
                 )
 
+            # Set Conversation status to false
+            await self.conversation_repo.update_conversation_status(
+                conversation.id, False
+            )
+
             # Update customer status agent
             await self.customer_repo.update_customer_status_agent_by_customer_id(
                 conversation.customer_id, True

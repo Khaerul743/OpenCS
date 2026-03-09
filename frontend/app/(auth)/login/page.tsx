@@ -22,6 +22,7 @@ export default function Login() {
                     <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-600 text-sm text-center font-medium shadow-sm">
                         {state.message}
                     </div>
+                    
                 )}
                 
                 <div className="space-y-5">

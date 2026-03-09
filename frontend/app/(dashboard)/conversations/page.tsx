@@ -4,55 +4,13 @@ import { ChatWindow } from '@/components/user_dashboard/conversations/ChatWindow
 import { ConversationList } from '@/components/user_dashboard/conversations/ConversationList';
 import { useEffect, useState } from 'react';
 
-// --- MOCK DATA ---
-
-const MOCK_CONVERSATIONS = {
-  status: "success",
-  message: "Conversations retrieved",
-  data: Array.from({ length: 15 }, (_, i) => ({
-    id: `conv-${i}`,
-    username: i === 0 ? "John Doe" : i === 1 ? "Jane Smith" : `User ${i}`,
-    phone_number: `+1 (555) 000-${i.toString().padStart(4, '0')}`,
-    status: i === 1 ? 'pending' : i % 3 === 0 ? 'closed' : 'active',
-    last_message_at: new Date(Date.now() - i * 1000 * 60 * 10).toISOString(),
-    created_at: new Date(Date.now() - i * 1000 * 60 * 60 * 24).toISOString(),
-    agent_id: 'agent-1',
-    business_id: 'biz-1',
-    customer_id: `cust-${i}`
-  })) as any[] 
-};
-
-// Add fallback request to one conversation
-MOCK_CONVERSATIONS.data[1].fallback_requested = true;
-
-const MOCK_MESSAGES = {
-  status: "success",
-  message: "Messages retrieved",
-  data: [
-    { id: '1', content: "Hi, I have a question about my order.", sender_type: "customer", created_at: new Date(Date.now() - 3600000).toISOString() },
-    { id: '2', content: "Hello! I'd be happy to help. crucial info could you provide your order number?", sender_type: "ai", created_at: new Date(Date.now() - 3500000).toISOString() },
-    { id: '3', content: "It's #12345.", sender_type: "customer", created_at: new Date(Date.now() - 3400000).toISOString() },
-    { id: '4', content: "Thank you. Let me check the status for you.", sender_type: "ai", created_at: new Date(Date.now() - 3300000).toISOString() },
-    { id: '5', content: "I found your order. It is currently being processed and will ship tomorrow.", sender_type: "ai", created_at: new Date(Date.now() - 3200000).toISOString() },
-  ]
-};
-
-const MOCK_FALLBACK = {
-    id: "fb-1",
-    created_at: new Date().toISOString(),
-    business_id: "biz-1",
-    conversation_id: "conv-1",
-    confidence_level: 0.45,
-    last_decision_summary: "User requested a refund for a custom item, which requires manager approval. Policy is unclear."
-};
-
-
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [loadingList, setLoadingList] = useState(true);
   
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
+  const [fallbackData, setFallbackData] = useState<any>(null);
   const [loadingChat, setLoadingChat] = useState(false);
   
   const [filter, setFilter] = useState('all');
@@ -61,54 +19,135 @@ export default function ConversationsPage() {
   // Chat state
   const [isAgentEnabled, setIsAgentEnabled] = useState(true);
 
-  // Initial Fetch
+  // Initial Fetch conversations
+  const fetchConversations = async (page = 1, limit = 50) => {
+     setLoadingList(true);
+     try {
+         const res = await fetch(`/api/conversation?page=${page}&limit=${limit}`);
+         if (!res.ok) throw new Error('Failed to fetch conversations');
+         const result = await res.json();
+         if (result.status === 'success') {
+             setConversations(result.data.conversations || []);
+         }
+     } catch (err) {
+         console.error('Error fetching conversations:', err);
+         alert("Failed to load conversation list.");
+     } finally {
+         setLoadingList(false);
+     }
+  };
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setConversations(MOCK_CONVERSATIONS.data);
-      setLoadingList(false);
-    }, 1500);
-    return () => clearTimeout(timer);
+    fetchConversations();
   }, []);
 
   // Filter Logic
   const filteredConversations = conversations.filter(conv => {
     const matchesFilter = 
       filter === 'all' ? true :
-      filter === 'human_needed' ? conv.fallback_requested :
-      conv.status === filter;
+      filter === 'human_needed' ? conv.need_human === true :
+      filter === 'ai_handled' ? conv.need_human === false : true;
     
     const matchesSearch = 
-      conv.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      conv.phone_number.includes(searchQuery);
+      conv.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      conv.phone_number?.includes(searchQuery);
 
     return matchesFilter && matchesSearch;
   });
 
   // Select Conversation Logic
-  const handleSelectConversation = (id: string) => {
+  const handleSelectConversation = async (id: string) => {
     setSelectedId(id);
     setLoadingChat(true);
-    // Simulate chat load
-    setTimeout(() => {
-        setMessages(MOCK_MESSAGES.data); // Reset to mock history
+    setMessages([]);
+    setFallbackData(null);
+    setIsAgentEnabled(true); // default true before fetching status
+    
+    const conversation = conversations.find(c => c.id === id);
+    if (!conversation) return;
+
+    try {
+        let endpoint = `/api/conversation/message?id=${id}`;
+        // if needs human, fetch fallback endpoint to get confidence info
+        if (conversation.need_human) {
+            endpoint = `/api/conversation/fallback?id=${id}`;
+        }
+        
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error('Failed to load chat details');
+        const result = await res.json();
+        
+        if (result.status === 'success') {
+            setMessages(result.data.messages || []);
+            setIsAgentEnabled(result.data.convStatusAgent); // Sync agent status switch
+            if (conversation.need_human && result.data.fallback) {
+                setFallbackData(result.data.fallback);
+            }
+        }
+    } catch (err) {
+        console.error('Error fetching chat details:', err);
+        alert('Failed to load the conversation messages.');
+    } finally {
         setLoadingChat(false);
-        // Reset agent state toggles per conversation if needed, for now mocking global/per session persistence
-        setIsAgentEnabled(true); 
-    }, 800);
+    }
   };
 
-  const handleSendMessage = (text: string) => {
-    const newMessage = {
-        id: Date.now().toString(),
+  const handleSendMessage = async (text: string) => {
+    if (!selectedId) return;
+    
+    // Add optimistic message to UI temporarily
+    const optimisticMessage = {
+        id: 'temp-' + Date.now(),
         content: text,
-        sender_type: 'human',
+        sender_type: 'human_admin',
         created_at: new Date().toISOString()
     };
-    setMessages([...messages, newMessage]);
+    setMessages(prev => [...prev, optimisticMessage]);
+
+    try {
+        const res = await fetch(`/api/conversation/message?id=${selectedId}`, {
+            method: 'POST',
+            body: JSON.stringify({text_message: text}),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!res.ok) throw new Error("Failed to send message");
+        // We could refetch or just rely on the fallback structure if the API returns the saved message 
+        // For now, if no error is thrown, the optimistic message stays valid (we can re-fetch just in case)
+        
+        // Re-fetch chat data to get correct ID mapping
+        const refetchRes = await fetch(`/api/conversation/message?id=${selectedId}`);
+        const result = await refetchRes.json();
+        if (result.status === 'success') setMessages(result.data.messages || []);
+        
+    } catch (err) {
+        console.error('Error sending message:', err);
+        alert('Failed to send the message. Please try again.');
+        // Filter out optimistic message if failed
+        setMessages(prev => prev.filter(m => m.id !== optimisticMessage.id));
+    }
+  };
+
+  const handleToggleAgent = async (enabled: boolean) => {
+      if (!selectedId) return;
+      const originalState = isAgentEnabled;
+      setIsAgentEnabled(enabled); // Optimistically swap UI
+      
+      try {
+          const res = await fetch(`/api/conversation?id=${selectedId}`, {
+              method: 'PUT',
+              body: JSON.stringify({ agentStatus: enabled }),
+              headers: { 'Content-Type': 'application/json' }
+          });
+          if (!res.ok) throw new Error("Failed to toggle agent status.");
+      } catch (err) {
+          console.error('Error toggling agent:', err);
+          alert('Failed to update agent status.');
+          setIsAgentEnabled(originalState); // Revert UI
+      }
   };
 
   const selectedConversation = conversations.find(c => c.id === selectedId);
-  const fallbackData = selectedConversation?.fallback_requested ? MOCK_FALLBACK : null;
 
   return (
     <>
@@ -134,11 +173,11 @@ export default function ConversationsPage() {
              conversationId={selectedId}
              username={selectedConversation?.username || ''}
              phoneNumber={selectedConversation?.phone_number || ''}
-             status={selectedConversation?.status || 'active'}
+             status={selectedConversation?.need_human ? 'pending' : 'active'}
              fallback={fallbackData}
              messages={messages}
              isAgentEnabled={isAgentEnabled}
-             onToggleAgent={setIsAgentEnabled}
+             onToggleAgent={handleToggleAgent}
              onSendMessage={handleSendMessage}
              isLoading={loadingChat}
            />

@@ -1,7 +1,7 @@
 from uuid import UUID
-from supabase import AsyncClient
 
 from src.domain.services import ConversationService
+from supabase import AsyncClient
 
 from .base import BaseController
 
@@ -10,9 +10,7 @@ class ConversationController(BaseController):
     def __init__(self, db: AsyncClient):
         self.conversation_service = ConversationService(db)
 
-    async def get_all_conversation_handler(
-        self, page: int = 1, limit: int = 10
-    ):
+    async def get_all_conversation_handler(self, page: int = 1, limit: int = 10):
         result = await self.conversation_service.get_all_conversation(
             page=page, limit=limit
         )
@@ -32,6 +30,14 @@ class ConversationController(BaseController):
 
         return conversation_fallback
 
+    async def get_conversation_fallback_handler(self, conversation_id: UUID):
+        conversation_fallback = (
+            await self.conversation_service.get_conversation_fallback(conversation_id)
+        )
+        conv_fallback_dict = conversation_fallback.model_dump()
+        del conv_fallback_dict["business_id"]
+        return conv_fallback_dict
+
     async def post_direct_message_handler(
         self, conversation_id: UUID, text_message: str
     ):
@@ -47,7 +53,7 @@ class ConversationController(BaseController):
         result = await self.conversation_service.get_customer_status_agent(
             conversation_id
         )
-        return {"customer status agent": result}
+        return {"customer_status_agent": result}
 
     async def update_customer_status_agent_handler(
         self, conversation_id: UUID, status: bool

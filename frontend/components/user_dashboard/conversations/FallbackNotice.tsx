@@ -34,7 +34,7 @@ export const FallbackNotice: React.FC<FallbackNoticeProps> = ({
           </p>
           <div className="flex items-center gap-4 text-xs font-medium text-amber-700">
             <div className="px-2 py-0.5 bg-amber-200/50 rounded border border-amber-200">
-               Confidence: {(confidenceLevel * 100).toFixed(0)}%
+               Confidence: {(confidenceLevel).toFixed(0)}%
             </div>
             <span className="italic">"{reason}"</span>
           </div>

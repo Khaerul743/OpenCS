@@ -138,3 +138,17 @@ class ConversationRepository(IConversationRepository):
             conversations.append(row)
 
         return conversations, total_count
+
+    async def update_conversation_status(
+        self, conversation_id: UUID, need_human: bool
+    ) -> Conversations | None:
+        result = (
+            await self.db.table("Conversations")
+            .update({"need_human": need_human})
+            .eq("id", conversation_id)
+            .execute()
+        )
+        if len(result.data) == 0:
+            return None
+
+        return Conversations.model_validate(result.data[0])

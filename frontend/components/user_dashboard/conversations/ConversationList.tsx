@@ -8,8 +8,7 @@ interface Conversation {
   username: string;
   phone_number: string;
   last_message_at: string;
-  status: 'active' | 'closed' | 'pending';
-  fallback_requested?: boolean; // Mock property for now, derived from fallback data in real app
+  need_human: boolean;
 }
 
 interface ConversationListProps {
@@ -80,9 +79,8 @@ export const ConversationList: React.FC<ConversationListProps> = ({
                 username={conv.username}
                 phoneNumber={conv.phone_number}
                 lastMessageTime={conv.last_message_at}
-                status={conv.status}
+                status={conv.need_human}
                 isActive={selectedId === conv.id}
-                hasFallback={!!conv.fallback_requested}
                 onClick={() => onSelect(conv.id)}
               />
             ))}

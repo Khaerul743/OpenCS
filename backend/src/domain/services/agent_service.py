@@ -261,14 +261,17 @@ class AgentService(BaseService):
         return updated_agent
 
     async def update_agent(self, payload: UpdateAgentIn):
+        print("KONTOL")
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()
 
         agent = await self.agent_repo.get_agent_by_user_id(user_id)
+
         if agent is None:
             raise AgentNotFound()
 
+        print("MEMEK")
         result = await self.update_agent_usecase.execute(
             UpdateAgentInput(
                 agent_id=agent.id,
@@ -276,6 +279,7 @@ class AgentService(BaseService):
                 agent_data=payload,
             )
         )
+        print("MEMEK ANJING")
         if not result.is_success():
             self.raise_error_usecase(result)
 

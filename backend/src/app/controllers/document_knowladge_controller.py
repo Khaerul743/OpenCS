@@ -14,7 +14,14 @@ class DocumentKnowladgeController(BaseController):
     async def get_all_document_knowladges_handler(self):
         try:
             result = await self.document_knowladge_service.get_all_document_knowladges()
-            return result
+            list_data = []
+            for i in result:
+                data = i.model_dump()
+                del data["file_path"]
+                del data["updated_at"]
+                del data["agent_id"]
+                list_data.append(data)
+            return list_data
         except Exception as e:
             raise e
 

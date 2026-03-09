@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 from src.app.controllers import AgentController
 from src.app.middlewares.rbac import require_roles
-from src.app.validators.agent_schema import CreateAgentIn, UpdateAgentIn
+from src.app.validators.agent_schema import CreateAgentIn, UpdateAgentIn, InvokeAgentIn
 from src.core.utils.factory import controller_factory
 from src.core.utils.response import success_response
 from src.core.utils.security import jwtHandler
@@ -35,16 +35,16 @@ async def create_agent(
 
 @router.post("/invoke/me", status_code=status.HTTP_200_OK)
 async def invoke_agent(
-    text_message: str,
+    payload: InvokeAgentIn,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: AgentController = Depends(get_agent_controller),
 ):
-    result = await controller.invoke_agent_handler(text_message)
+    result = await controller.invoke_agent_handler(payload.text_message)
     return success_response(result, "invoke agent is successfully")
 
 
-@router.put("", status_code=status.HTTP_200_OK)
+@router.put("/me", status_code=status.HTTP_200_OK)
 async def update_agent(
     payload: UpdateAgentIn,
     _: None = Depends(jwtHandler.jwt_required),
