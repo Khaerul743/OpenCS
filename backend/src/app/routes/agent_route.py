@@ -95,6 +95,21 @@ async def get_human_vs_ai_message_trend(
     return success_response(result, "Get human vs ai message trend is successfully")
 
 
+@router.get("/analytic/category-percentages/{period}/me", status_code=status.HTTP_200_OK)
+async def get_category_percentages(
+    period: str,
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: AgentController = Depends(get_agent_controller),
+):
+    """
+    Get message category percentages based on period.
+    - period: `day` (last 24 hours), `weekly` (last 7 days), `alltime`
+    """
+    result = await controller.get_category_percentages_handler(period)
+    return success_response(result, "Get category percentages is successfully")
+
+
 @router.get("/status/me", status_code=status.HTTP_200_OK)
 async def get_status_agent(
     _: None = Depends(jwtHandler.jwt_required),

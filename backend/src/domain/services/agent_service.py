@@ -27,6 +27,8 @@ from src.domain.usecases.agent import (
 from src.domain.usecases.analytic import (
     GetAgentAnalyticsInput,
     GetAgentAnalyticsUseCase,
+    GetCategoryPercentages,
+    GetCategoryPercentagesInput,
     GetHumanVsAiMessageTrendInput,
     GetHumanVsAiMessageTrendUseCase,
     GetMessageUsageTrendInput,
@@ -69,6 +71,10 @@ class AgentService(BaseService):
         )
 
         self.get_human_vs_ai_message_trend_usecase = GetHumanVsAiMessageTrendUseCase(
+            self.analytic_repo
+        )
+
+        self.get_category_percentages_usecase = GetCategoryPercentages(
             self.analytic_repo
         )
 
@@ -227,6 +233,29 @@ class AgentService(BaseService):
         if result_data is None:
             raise RuntimeError(
                 "Get human vs ai message trend usecase did not returned the data"
+            )
+
+        return result_data
+
+    async def get_category_percentages(self, period: str = "alltime"):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        result = await self.get_category_percentages_usecase.execute(
+            GetCategoryPercentagesInput(agent_id=agent_id, period=period)
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError(
+                "Get category percentages usecase did not returned the data"
             )
 
         return result_data

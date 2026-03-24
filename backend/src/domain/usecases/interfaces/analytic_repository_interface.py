@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from uuid import UUID
 
 from src.app.validators.analytic_schema import InsertAgentAnalytic
@@ -25,4 +26,10 @@ class IAnalyticRepository(ABC):
 
     @abstractmethod
     async def get_human_vs_ai_message_trend(self, agent_id: UUID) -> list[dict] | None:
+        pass
+
+    @abstractmethod
+    async def get_category_messages(
+        self, agent_id: UUID, since: datetime | None = None, until: datetime | None = None
+    ) -> list[dict] | None:
         pass

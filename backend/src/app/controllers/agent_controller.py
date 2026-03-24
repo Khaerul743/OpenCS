@@ -46,6 +46,13 @@ class AgentController(BaseController):
         result = await self.agent_service.get_human_vs_ai_message_trend()
         return result.trend_data
 
+    async def get_category_percentages_handler(self, period: str = "alltime"):
+        result = await self.agent_service.get_category_percentages(period)
+        return {
+            "summary": [s.model_dump() for s in result.summary],
+            "samples": [s.model_dump() for s in result.samples],
+        }
+
     async def get_status_agent_handler(self):
         result = await self.agent_service.get_status_agent()
         return {"status": result}

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from uuid import UUID
 
 from .base import BaseEntity
@@ -13,4 +13,6 @@ class AgentAnalytics(BaseEntity):
     response_time: float
     token: int
     ai_response: str
+    user_message: str
+    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"]
     created_at: Optional[datetime] = None

@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from supabase import AsyncClient
@@ -86,4 +87,31 @@ class AnalyticsRepository(IAnalyticRepository):
 
         except Exception as e:
             print(f"Error fetching human vs ai trend: {e}")
+            return None
+
+    async def get_category_messages(
+        self, agent_id: UUID, since: datetime | None = None, until: datetime | None = None
+    ) -> list[dict] | None:
+        try:
+            query = (
+                self.db.table("Agent_analytics")
+                .select("category, user_message")
+                .eq("agent_id", str(agent_id))
+            )
+
+            if since is not None:
+                query = query.gte("date", since.isoformat())
+
+            if until is not None:
+                query = query.lte("date", until.isoformat())
+
+            result = await query.execute()
+
+            if len(result.data) == 0:
+                return None
+
+            return result.data
+
+        except Exception as e:
+            print(f"Error fetching category messages: {e}")
             return None
