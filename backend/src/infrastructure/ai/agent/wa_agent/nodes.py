@@ -61,7 +61,6 @@ class WhatsappAgentNode(BaseNode):
         messages = self.get_prompt_setup(
             self.prompt.main_llm(state.user_message), state.messages, self.MAX_MESSAGES
         )
-
         try:
             result = self.call_llm_with_structured_output(messages, MainAgentOutput)
         except Exception:
@@ -94,6 +93,7 @@ class WhatsappAgentNode(BaseNode):
                 "human_fallback": result_dict["human_fallback"],
                 "decision_summary": result_dict["decision_summary"],
                 "conversation_summary": self.con_summary,
+                "category": result_dict["category"]
             }
         return {
             "response": result_dict["your_answer"],
@@ -102,6 +102,7 @@ class WhatsappAgentNode(BaseNode):
             "need_more_information": result_dict["need_more_information"],
             "human_fallback": result_dict["human_fallback"],
             "decision_summary": result_dict["decision_summary"],
+            "category": result_dict["category"],
             "messages": list(state.messages)
             + [HumanMessage(content=state.user_message)]
             + [

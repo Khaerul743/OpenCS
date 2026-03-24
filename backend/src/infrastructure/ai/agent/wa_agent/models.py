@@ -21,6 +21,9 @@ class MainAgentOutput(BaseModel):
             "berisi kesimpulan dan informasi yang sekiranya diperlukan untuk menjawab pertanyaan customer"
         )
     )
+    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = Field(
+        description=("Tentukan kategori pesan dari customer")
+    )
     confidence: float = Field(
         description="Tingkat kepercayaan diri kamu dalam menjawab pertanyaan tersebut(1-100)"
     )
@@ -30,15 +33,6 @@ def create_call_preparation_tool_model(business_knowladge: list[str]):
     business_knowladge_type = Literal[tuple(business_knowladge)]
     return create_model(
         "CallPreparationToolOutput",
-        # rag_query=(
-        #     str,
-        #     Field(
-        #         description=(
-        #             "Query untuk tool rag"
-        #             "Tentukan query yang sesuai untuk menjawab pertanyaan customer"
-        #         )
-        #     ),
-        # ),
         rag_query=(
             Optional[str],  # Gunakan Optional
             Field(
@@ -103,6 +97,7 @@ class WhatsappAgentState(BaseAgentStateModel):
     need_more_information: bool = False
     call_tool_again: bool = False
     decision_summary: Optional[str] = None
+    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = "lainnya"
     rag_query: Optional[str] = None
     rag_query_result: Optional[str] = None
     business_knowladge_key: List = []

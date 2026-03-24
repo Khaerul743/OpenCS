@@ -18,6 +18,10 @@ from .get_human_vs_ai_message_trend import (
     GetHumanVsAiMessageTrendOutput,
     GetHumanVsAiMessageTrendUseCase,
 )
+from .get_category_percentages import (
+    GetCategoryPercentagesInput,
+    GetCategoryPercentages
+)
 
 __all__ = [
     "GetAgentAnalyticsInput",
@@ -28,4 +32,6 @@ __all__ = [
     "GetMessageUsageTrendUseCase",
     "GetHumanVsAiMessageTrendInput",
     "GetHumanVsAiMessageTrendUseCase",
+    "GetCategoryPercentagesInput",
+    "GetCategoryPercentages"
 ]

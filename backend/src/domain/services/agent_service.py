@@ -261,7 +261,6 @@ class AgentService(BaseService):
         return updated_agent
 
     async def update_agent(self, payload: UpdateAgentIn):
-        print("KONTOL")
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()
@@ -271,7 +270,6 @@ class AgentService(BaseService):
         if agent is None:
             raise AgentNotFound()
 
-        print("MEMEK")
         result = await self.update_agent_usecase.execute(
             UpdateAgentInput(
                 agent_id=agent.id,

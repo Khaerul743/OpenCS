@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 
 from pydantic import BaseModel
 
@@ -10,5 +10,7 @@ class InsertAgentAnalytic(BaseModel):
     human_takeover: Optional[int] = 0
     response_time: float
     token: int
+    user_message: str
+    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = "lainnya"
     ai_response: str
     created_at: Optional[datetime] = None

@@ -104,7 +104,6 @@ class MessageProcessingUseCase(
                 if result_response is None
                 else result_response
             )
-
             # Insert Agent Analytic
             date_now = datetime.now().date()
 
@@ -118,6 +117,8 @@ class MessageProcessingUseCase(
                         token=total_token,
                         ai_response=result_message,
                         human_takeover=agent_result["human_fallback"],
+                        user_message=input_data.agent_state.user_message,
+                        category=agent_result["category"]
                     ),
                 )
             )

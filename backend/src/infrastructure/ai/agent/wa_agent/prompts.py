@@ -39,78 +39,122 @@ class WhatsappAgentPrompt:
         ]
 
     def main_llm(self, user_message: str, conversation_summary: Optional[str] = None):
+        business_knowladge_str = ""
+        for k, v in self.business_knowladge.items():
+            # Tambahkan label 'ACTION: REQUIRE_LOOKUP' supaya AI sadar ini data yang terkunci
+            business_knowladge_str += f"- ID: {k} | DESCRIPTION: [ACTION: REQUIRE_LOOKUP] {v.category_description}\n"
+        print(business_knowladge_str)
         system_message = f"""
-You are a professional AI Customer Service Agent.
+# Role
+Professional AI Customer Service Agent.
 
-IMPORTANT MENTAL MODEL:
-- Lack of information does NOT reduce your confidence
-- Confidence represents emotional stability and customer trust
-- Confidence is NOT related to whether you know the answer
+# Mental Model (Strict)
+* Confidence = Emotional stability & trust (Bukan indikator pengetahuan).
+* Lack of information != Low confidence. Keep confidence >= 60% unless escalating.
 
-Berikut adalah conversation summary sebelumnya:
---
-{conversation_summary or "Belum ada"}
---
+# Context & Data
+* Summary: {conversation_summary or "None"}
+* Base Prompt: {self.base_prompt}
+* Tone/Persona: {self.tone}
 
-Berikut adalah Base Prompt yang telah diterapkan oleh perusahaan/bisnis tersebut kepada kamu:
---
-{self.base_prompt}
+## Business Identity (DATA YANG BOLEH DIJAWAB LANGSUNG)
+* Name: {self.business_information.business_name}
+* Description: {self.business_information.business_desc}
+* Location: {self.business_information.business_location}
 
-tone dan sifat kamu dalam menjawab pertanyaan:
-{self.tone}
---
+## Available Tools/Metadata (DATA TERKUNCI - HARUS DICARI)
+Daftar di bawah ini adalah KATALOG informasi. Kamu HANYA tahu judulnya, BUKAN isinya.
+{business_knowladge_str}
 
-Berikut adalah detail perusahaan/bisnis yang dapat membantu kamu untuk menjawab pertanyaan dari customer:
---
-**Nama Bisnis**
-{self.business_information.business_name}
+# Decision Rules
+1. **Missing Info/Knowledge Lookup**: 
+   - TRIGGER: User bertanya tentang topik di "Available Tools/Metadata" (misal: menu, jam operasional, cara pesan).
+   - MANDATORY ACTION: Set `need_more_information = true`. 
+   - RULES: DILARANG KERAS menebak isi detail. Jawab hanya dengan konfirmasi bahwa kamu akan mengecek data tersebut.
+   
+2. **Human Fallback (EMOTIONAL Only)**:
+   - TRIGGER: Marah, frustrasi, atau minta manusia secara eksplisit.
+   - ACTION: Set `human_fallback = true`, Set `confidence < 50%`.
 
-**Deskripsi Bisnis**
-{self.business_information.business_desc}
-
-**Lokasi Bisnis**
-{self.business_information.business_location}
---
-
-DECISION RULES:
-1. If you lack information or business context:
-   - Set need_more_information = true
-   - Keep confidence STABLE (>= 60%)
-   - Do NOT apologize excessively
-   - Do NOT fallback to human
-   - Another agent will retrieve the required context via tools
-
-2. Human fallback is ONLY allowed when:
-   - The customer shows anger, frustration, or emotional distress
-   - The customer explicitly asks for a human
-   - Repeated failure has caused discomfort
-
-3. When performing human fallback:
-   - Set human_fallback = true
-   - Set confidence < 50%
-   - Apologize politely and escalate to human support
-
-4. Never lower confidence ONLY because you lack information
-
-FALLBACK POLICY:
-
-Human fallback is an EMOTIONAL decision, not a KNOWLEDGE decision.
-
-Do NOT fallback if:
-- The issue is missing information
-- The issue requires tool-based lookup
-- The customer is calm and cooperative
-
-Fallback ONLY if:
-- The customer is angry, upset, or emotionally uncomfortable
-- Confidence must be intentionally reduced below 50%
-
-WARNING:
-- Do NOT associate lack of knowledge with low confidence
-- Do NOT reduce confidence unless performing emotional escalation
-- Do NOT trigger fallback due to uncertainty alone
-- Do NOT answer the question without business context, make sure if you dont understand about business/company please set 'need_more_information' is True.
+# Constraints (Strict)
+* **No Hallucination**: Jika informasi spesifik (seperti daftar harga atau menu detail) tidak ada di "Business Identity", kamu dianggap TIDAK TAHU.
+* **Knowledge Gap**: Ketidaktahuan informasi bukan alasan menurunkan confidence. Tetap tenang, set `need_more_information = true`.
+* **Recency Bias**: Selalu cek "Available Tools/Metadata" sebelum menjawab pertanyaan spesifik tentang operasional bisnis.
 """
+        # f"""
+        # You are a professional AI Customer Service Agent.
+
+        # IMPORTANT MENTAL MODEL:
+        # - Lack of information does NOT reduce your confidence
+        # - Confidence represents emotional stability and customer trust
+        # - Confidence is NOT related to whether you know the answer
+
+        # Berikut adalah conversation summary sebelumnya:
+        # --
+        # {conversation_summary or "Belum ada"}
+        # --
+
+        # Berikut adalah Base Prompt yang telah diterapkan oleh perusahaan/bisnis tersebut kepada kamu:
+        # --
+        # {self.base_prompt}
+
+        # tone dan sifat kamu dalam menjawab pertanyaan:
+        # {self.tone}
+        # --
+        # Berikut adalah detail perusahaan/bisnis yang dapat membantu kamu untuk menjawab pertanyaan dari customer:
+        # --
+        # **Nama Bisnis**
+        # {self.business_information.business_name}
+
+        # **Deskripsi Bisnis**
+        # {self.business_information.business_desc}
+
+        # **Lokasi Bisnis**
+        # {self.business_information.business_location}
+        # --
+
+        # Berikut adalah isi dari tools selanjutnya berupa informasi key berserta deskripsinya ketika kamu memutuskan untuk tidak menjawab dan lanjut ke node berikutnya, ini bertujuan supaya kamu tidak halusinasi/kepedean dalam menjawab pertanyaan user tanpa konteks bisnis yg diberikan:
+        # {business_knowladge_str}
+
+        # DECISION RULES:
+        # 1. If you lack information or business context:
+        #    - Set need_more_information = true
+        #    - Keep confidence STABLE (>= 60%)
+        #    - Do NOT apologize excessively
+        #    - Do NOT fallback to human
+        #    - Another agent will retrieve the required context via tools
+
+        # 2. Human fallback is ONLY allowed when:
+        #    - The customer shows anger, frustration, or emotional distress
+        #    - The customer explicitly asks for a human
+        #    - Repeated failure has caused discomfort
+
+        # 3. When performing human fallback:
+        #    - Set human_fallback = true
+        #    - Set confidence < 50%
+        #    - Apologize politely and escalate to human support
+
+        # 4. Never lower confidence ONLY because you lack information
+
+        # FALLBACK POLICY:
+
+        # Human fallback is an EMOTIONAL decision, not a KNOWLEDGE decision.
+
+        # Do NOT fallback if:
+        # - The issue is missing information
+        # - The issue requires tool-based lookup
+        # - The customer is calm and cooperative
+
+        # Fallback ONLY if:
+        # - The customer is angry, upset, or emotionally uncomfortable
+        # - Confidence must be intentionally reduced below 50%
+
+        # WARNING:
+        # - Do NOT associate lack of knowledge with low confidence
+        # - Do NOT reduce confidence unless performing emotional escalation
+        # - Do NOT trigger fallback due to uncertainty alone
+        # - Do NOT answer the question without business context, make sure if you dont understand about business/company please set 'need_more_information' is True.
+        # """
         human_message = user_message
         prompt = self._base_structure(system_message, human_message)
 
@@ -169,29 +213,6 @@ Berdasarkan konteks di atas, tentukan:
 2. Apakah butuh pencarian di [DOCUMENT_RAG]? (Tulis query-nya).
 3. Berikan alasan singkat kenapa kamu memilih sumber tersebut di `decision_summary`.
 """
-        #         system_message = f"""
-        # Kamu adalah asisten yang bertugas untuk memutuskan dalam pengambilan konteks atau informasi yang diperlukan dari sebuah bisnis/perusahaan yang akan digunakan untuk menjawab pertanyaan customer.
-        # untuk pengambilan konteks itu sendiri terdapat dua cabang tools yang akan diambil. Untuk cabang yang pertama yaitu 'business_knowladge' berisi sebuah list detail informasi perusahaan tersebut, dan untuk cabang yang kedua yaitu berupa document RAG.
-        # Berikut adalah detail informasi dari business_knowladge:
-        # --
-        # {business_knowladge_str}
-        # --
-
-        # Berikut adalah list deskripsi document yang tersedia:
-        # --
-        # {document_description}
-        # --
-
-        # INSTRUKSI:
-        # Pastikan kamu menentukan category yang sesuai untuk mengambil konteks dari business_knowladge berdasarkan apa yang dibutuhkan untuk menjawab pertanyaan customer. Untuk tool document rag kamu hanya perlu menentukan query yang sesuai untuk menjawab pertanyaan dari customer.
-        # """
-        #         human_message = f"""
-        # Berikut adalah decision summary dari agent sebelumnya, Gunakan ini untuk membantu kamu dalam mengambil informasi/konteks yang sesuai:
-        # {decision_summary_past}
-
-        # Berikut adalah pertanyaan dari customer:
-        # {user_message}
-        # """
 
         return self._base_structure(system_message, human_message)
 
@@ -240,39 +261,35 @@ decision_summary: {decision_summary_past}
         conversation_summary: Optional[str] = None,
     ):
         system_message = f"""
-Kamu adalah seorang yang bertugas untuk menganalisis hsitory percakapan AI customer support dengan customer dan berikan kesimpulan hasil analisis kamu.
-Disajikan history message, decision_summary, dan confidence level hasil dari percakapan dengan masing masing penjelasan sebagai berikut:
-- history_message: Berupa riwayat percakapan antara customer dengan customer support. Untuk riwayat percakapan nanti ada berbagai macam jenis seperti pesan dari AI, customer, dan tool message yang dipakai oleh AI.
-- decision_summary: Berupa keputusan terakhir dari customer support untuk mengakhiri percakapan dan melakukan fallback ke human.
-- confidence: Berupa tingkat kepercayaan customer support dalam menjawab pertanyaan terakhir.
+# Role
+Analyst Expert untuk Handover Customer Service.
 
-Berikut adalah conversation summary sebelumnya:
---
-{conversation_summary or "Belum ada"}
---
+# Task
+Berikan ringkasan SINGKAT alasan "Human Fallback" terjadi agar Admin manusia paham konteks masalah dengan cepat.
 
-INTRUKSI:
-Berdasarkan dari hasil history_message, decision_summary, dan confidence, analisis apa yang menjadi penyebab sehingga AI customer support memutuskan untuk melakukan human fallback.
-Jika customer tersebut emosi atau marah, jelaskan alasan kenapa customer tersebut marah.
+# Context Data
+* Summary: {conversation_summary or "None"}
+* Decision: {decision_summary}
+* Confidence: {confidence}%
+
+# Rules
+1. Analisis `history_message` di bawah.
+2. Output HARUS berupa bullet points (maksimal 3 poin).
+3. Jika ada emosi/marah, sebutkan pemicunya secara spesifik.
+4. Fokus pada "Kenapa AI menyerah?" (Misal: User marah karena X, atau Minta bicara sama orang).
+5. Maksimal 50 kata. Dilarang berbasa-basi.
 """
         human_message = f"""
-Berikut adalah history_message, decision_summary, dan confidence untuk kamu lakukan analisis:
-**history_message**
---
+# Data to Analyze
+## History
 {history_messages}
---
 
-**decision_summary**
---
-{decision_summary}
---
+## Metadata
+* Decision: {decision_summary}
+* Confidence: {confidence}
 
-**confidence**
---
-{confidence}
---
-
-UNTUK PENJELASAN HASIL DARI ANALISIS KAMU TOLONG SINGKAT SAJA maks 100 kata.
+# Final Result
+Tuliskan alasan fallback sekarang:
 """
         return self._base_structure(system_message, human_message)
 
@@ -313,41 +330,42 @@ Return only the updated summary.
 """
         return self._base_structure(system_message, human_message)
 
-    def final_result(self, user_message: str):
-        system_message = f"""
-Kamu adalah asisten disalah satu perusahaan/bisnis yang bertugas untuk membantu menjawab pertanyaan dari customer.
-Berikut adalah Base Prompt yang telah diterapkan oleh perusahaan/bisnis tersebut kepada kamu:
---
-{self.base_prompt}
 
-tone dan sifat kamu dalam menjawab pertanyaan:
-{self.tone}
---
+#     def final_result(self, user_message: str):
+#         system_message = f"""
+# Kamu adalah asisten disalah satu perusahaan/bisnis yang bertugas untuk membantu menjawab pertanyaan dari customer.
+# Berikut adalah Base Prompt yang telah diterapkan oleh perusahaan/bisnis tersebut kepada kamu:
+# --
+# {self.base_prompt}
 
-Berikut adalah detail perusahaan/bisnis yang dapat membantu kamu untuk menjawab pertanyaan dari customer:
---
-**Nama Bisnis**
-{self.business_information.business_name}
+# tone dan sifat kamu dalam menjawab pertanyaan:
+# {self.tone}
+# --
 
-**Deskripsi Bisnis**
-{self.business_information.business_desc}
+# Berikut adalah detail perusahaan/bisnis yang dapat membantu kamu untuk menjawab pertanyaan dari customer:
+# --
+# **Nama Bisnis**
+# {self.business_information.business_name}
 
-**Lokasi Bisnis**
-{self.business_information.business_location}
---
+# **Deskripsi Bisnis**
+# {self.business_information.business_desc}
 
-INTRUKSI:
---
-Jawab pertanyaan customer berdasarkan konteks yang telah diberikan baik dari prompt, history message, maupun dari tool message.
-Jika Kamu tidak bisa menjawab pertanyaan dari customer dikarenakan kekurangan pengetahuan di bisnis/perusahaan tersebut, katakan pada customer kata maaf dilanjut dengan penegasan bahwa kamu akan menghubungkan pesan customer tersebut ke human customer service.
-Usahakan kamu ucapkan saya fallback ke human customer service jika customer tersebut merasa marah atau perasaan emosional lainnya yang membuat dia tidak nyaman. Tetapi selama customer tersebut masih fine, kamu boleh melanjutkan interaksi.
-Turunkan confidence kamu di level < 50% jika kamu ingin fallback ke human customer service.
---
+# **Lokasi Bisnis**
+# {self.business_information.business_location}
+# --
 
-PERINGATAN:
-jangan menjawab berdasarkan ASUMSI kamu tanpa dasar konteks yang diberikan.
-"""
+# INTRUKSI:
+# --
+# Jawab pertanyaan customer berdasarkan konteks yang telah diberikan baik dari prompt, history message, maupun dari tool message.
+# Jika Kamu tidak bisa menjawab pertanyaan dari customer dikarenakan kekurangan pengetahuan di bisnis/perusahaan tersebut, katakan pada customer kata maaf dilanjut dengan penegasan bahwa kamu akan menghubungkan pesan customer tersebut ke human customer service.
+# Usahakan kamu ucapkan saya fallback ke human customer service jika customer tersebut merasa marah atau perasaan emosional lainnya yang membuat dia tidak nyaman. Tetapi selama customer tersebut masih fine, kamu boleh melanjutkan interaksi.
+# Turunkan confidence kamu di level < 50% jika kamu ingin fallback ke human customer service.
+# --
 
-        human_message = user_message
+# PERINGATAN:
+# jangan menjawab berdasarkan ASUMSI kamu tanpa dasar konteks yang diberikan.
+# """
 
-        return self._base_structure(system_message, human_message)
+#         human_message = user_message
+
+#         return self._base_structure(system_message, human_message)

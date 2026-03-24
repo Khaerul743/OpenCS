@@ -29,7 +29,6 @@ class AnalyticsRepository(IAnalyticRepository):
     ) -> AgentAnalytics:
         payload_dict = payload.model_dump(exclude_unset=True)
         payload_dict["agent_id"] = str(agent_id)
-        print(payload_dict)
         result = await self.db.table("Agent_analytics").insert(payload_dict).execute()
         return AgentAnalytics.model_validate(result.data[0])
 

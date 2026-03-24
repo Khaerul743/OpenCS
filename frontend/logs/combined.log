@@ -249,3 +249,17 @@
 {"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-08 10:46:20"}
 {"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-08 11:00:00"}
 {"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-08 11:00:03"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-10 14:58:54"}
+{"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-10 14:59:03"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-11 10:04:53"}
+{"level":"error","message":"Unexpected error while execute register action: TypeError: fetch failed","timestamp":"2026-03-11 10:04:53"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-11 10:06:06"}
+{"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-11 10:06:09"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-11 10:49:32"}
+{"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-11 10:49:36"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-11 21:33:03"}
+{"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-11 21:33:28"}
+{"email":"khaerullutfi028@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-23 20:06:08"}
+{"level":"info","message":"User login is successfully with email khaerullutfi028@gmail.com","timestamp":"2026-03-23 20:06:10"}
+{"email":"khaerul123@gmail.com","level":"info","message":"Starting user login process","timestamp":"2026-03-23 20:07:12"}
+{"level":"info","message":"User login is successfully with email khaerul123@gmail.com","timestamp":"2026-03-23 20:07:13"}

@@ -91,8 +91,11 @@ class InvokeAgentUseCase(BaseUseCase[InvokeAgentInput, InvokeAgentOutput]):
                     token=total_token,
                     ai_response=result_message,
                     human_takeover=agent_result["human_fallback"],
+                    user_message=input_data.agent_state.user_message,
+                    category=agent_result["category"]
                 ),
             )
+
             return UseCaseResult.success_result(
                 InvokeAgentOutput(
                     text_message=input_data.agent_state.user_message,
