@@ -12,6 +12,7 @@ from src.domain.repositories import (
     BusinessKnowladgeRepository,
     BusinessRepository,
     DocumentKnowladgeRepository,
+    InsightRepository,
 )
 from src.domain.usecases.agent import (
     CreateAgentObjUseCase,
@@ -36,6 +37,7 @@ from src.domain.usecases.analytic import (
     GetTokenUsageTrendInput,
     GetTokenUsageTrendUseCase,
 )
+from src.domain.usecases.insight import GenerateInsightInput, GenerateInsight
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
 from src.infrastructure.ai.agent.wa_agent import WhatsappAgentState
 
@@ -53,6 +55,7 @@ class AgentService(BaseService):
         self.analytic_repo = AnalyticsRepository(self.db)
         self.document_knowladge_repo = DocumentKnowladgeRepository(self.db)
         self.business_knowladge_repo = BusinessKnowladgeRepository(self.db)
+        self.insight_repo = InsightRepository(self.db)
 
         # dependencies
         self.whatsapp_agent_manager = whatsapp_agent_manager
@@ -92,6 +95,9 @@ class AgentService(BaseService):
             self.analytic_repo,
             self.whatsapp_agent_manager,
             self.create_agent_obj_usecase,
+        )
+        self.generate_insight_usecase = GenerateInsight(
+            self.insight_repo, self.business_repo, self.get_category_percentages_usecase
         )
         super().__init__(__name__)
 
@@ -306,7 +312,7 @@ class AgentService(BaseService):
                 agent_data=payload,
             )
         )
-        print("MEMEK ANJING")
+
         if not result.is_success():
             self.raise_error_usecase(result)
 
@@ -344,3 +350,28 @@ class AgentService(BaseService):
             raise RuntimeError("Invoke agent usecase did not returned the data")
 
         return result_data
+
+    async def triger_insight_generator(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        business_id = await self.business_repo.get_business_id_by_user_id(user_id)
+        if business_id is None:
+            raise BusinessNotFound()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        usecase_result = await self.generate_insight_usecase.execute(
+            GenerateInsightInput(business_id=business_id, agent_id=agent_id)
+        )
+        if not usecase_result.is_success():
+            self.raise_error_usecase(usecase_result)
+
+        result_data = usecase_result.get_data()
+        if not result_data:
+            raise RuntimeError("Generate insight usecase did not returned the data")
+
+        return result_data.insight

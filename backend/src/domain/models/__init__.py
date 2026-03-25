@@ -9,6 +9,7 @@ from .document_knowladges import Document_knowladge
 from .human_fallback import Human_Fallback
 from .messages import Messages
 from .users import User
+from .insigt import Insight
 
 __all__ = [
     "User",
@@ -22,4 +23,5 @@ __all__ = [
     "Messages",
     "Agent_configuration",
     "Human_Fallback",
+    "Insight",
 ]

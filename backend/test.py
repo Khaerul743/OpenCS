@@ -95,3 +95,38 @@
 
 #     print(agent.get_response())
 
+
+from src.infrastructure.ai.agent.agent_analysis import AgentAnalysisState, AgentAnalysis
+
+agent = AgentAnalysis()
+desc = "Ayam Bakar Naufal adalah usaha kuliner rumahan yang menyajikan berbagai menu ayam bakar dengan bumbu khas nusantara. Selain ayam bakar, tersedia juga beberapa pilihan lauk pendamping seperti ayam goreng, ikan bakar, dan aneka sambal. "
+raw = {
+    "summary": [
+        {"category_type": "lainnya", "total": 5, "change": "+66.67%"},
+        {"category_type": "produk & stok", "total": 1, "change": "+100.00%"},
+        {"category_type": "komplain", "total": 10, "change": "+50.00%"},
+    ],
+    "samples": [
+        {
+            "category_type": "lainnya",
+            "sample_messages": ["pembayaran pake apa ya?", "hai"],
+        },
+        {
+            "category_type": "produk & stok",
+            "sample_messages": ["menu dengan harga paling murah?"],
+        },
+        {
+            "category_type": "komplain",
+            "sample_messages": [
+                "Ini kenapa pesanan saya belum sampai!",
+                "Ayam bakar gk enak",
+                "Balikin uang saya",
+            ],
+        },
+    ],
+}
+result = agent.execute(
+    AgentAnalysisState(messages=[], business_description=desc, raw_data=raw), "default"
+)
+
+print(result)

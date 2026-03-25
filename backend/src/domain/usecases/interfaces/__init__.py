@@ -9,6 +9,7 @@ from .document_knowladge_repository_interface import IDocumentKnowladgeRepositor
 from .human_fallback_repository_interface import IHumanFallbackRepository
 from .message_repository_interface import IMessageRepository
 from .user_repository_interface import IUserRepository
+from .insight_repository_interface import IInsightRepository
 
 __all__ = [
     "IUserRepository",
@@ -22,4 +23,5 @@ __all__ = [
     "IAgentConfigurationRepository",
     "IAnalyticRepository",
     "IHumanFallbackRepository",
+    "IInsightRepository",
 ]

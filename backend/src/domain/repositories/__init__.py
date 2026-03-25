@@ -9,6 +9,7 @@ from .document_knowladge_repository import DocumentKnowladgeRepository
 from .message_repository import MessageRepository
 from .user_repository import UserRepository
 from .human_fallback_repository import HumanFallbackRepository
+from .insight_repository import InsightRepository
 
 __all__ = [
     "UserRepository",
@@ -22,4 +23,5 @@ __all__ = [
     "MessageRepository",
     "AnalyticsRepository",
     "HumanFallbackRepository",
+    "InsightRepository",
 ]
