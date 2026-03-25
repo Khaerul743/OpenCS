@@ -8,3 +8,7 @@ class IInsightRepository(ABC):
     @abstractmethod
     async def createInsight(self, business_id: UUID, payload: AddInsight) -> Insight:
         pass
+
+    @abstractmethod
+    async def get_current_insight(self, business_id: UUID) -> None | Insight:
+        pass

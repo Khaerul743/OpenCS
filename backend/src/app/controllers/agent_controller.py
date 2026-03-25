@@ -53,6 +53,12 @@ class AgentController(BaseController):
             "samples": [s.model_dump() for s in result.samples],
         }
 
+    async def get_insight_handler(self):
+        result = await self.agent_service.get_insight()
+        result_dict = result.model_dump()
+        del result_dict["business_id"]
+        return result_dict
+
     async def get_status_agent_handler(self):
         result = await self.agent_service.get_status_agent()
         return {"status": result}
@@ -63,7 +69,6 @@ class AgentController(BaseController):
         return result.model_dump()
 
     async def update_agent_handler(self, payload: UpdateAgentIn):
-        print("KOCAK")
         result = await self.agent_service.update_agent(payload)
         return result
 

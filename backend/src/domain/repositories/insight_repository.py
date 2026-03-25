@@ -16,3 +16,17 @@ class InsightRepository(IInsightRepository):
         result = await self.db.table("Insight").insert(payload_dict).execute()
         result_data = result.data[0]
         return Insight.model_validate(result_data)
+
+    async def get_current_insight(self, business_id: UUID) -> None | Insight:
+        result = (
+            await self.db.table("Insight")
+            .select("*")
+            .eq("business_id", str(business_id))
+            .order("created_at", desc=True)
+            .limit(1)
+            .maybe_single()
+            .execute()
+        )
+        if result is None:
+            return None
+        return Insight.model_validate(result.data)

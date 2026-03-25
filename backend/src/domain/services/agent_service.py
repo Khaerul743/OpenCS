@@ -2,7 +2,7 @@ from supabase import AsyncClient
 
 from src.app.validators.agent_schema import CreateAgentIn, UpdateAgentIn
 from src.core.context.request_context import current_user_id
-from src.core.exceptions.agent_exception import AgentNotFound
+from src.core.exceptions.agent_exception import AgentNotFound, InsightNotFound
 from src.core.exceptions.auth_exception import UnauthorizedException
 from src.core.exceptions.business_exception import BusinessNotFound
 from src.domain.repositories import (
@@ -265,6 +265,21 @@ class AgentService(BaseService):
             )
 
         return result_data
+
+    async def get_insight(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        business_id = await self.business_repo.get_business_id_by_user_id(user_id)
+        if business_id is None:
+            raise BusinessNotFound()
+
+        insight = await self.insight_repo.get_current_insight(business_id)
+        if insight is None:
+            raise InsightNotFound()
+
+        return insight
 
     async def get_status_agent(self):
         user_id = current_user_id.get()

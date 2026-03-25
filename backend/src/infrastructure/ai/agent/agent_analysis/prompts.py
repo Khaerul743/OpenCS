@@ -15,28 +15,18 @@ class AgentAnalysisPrompt:
         self, business_description: str, raw_data: dict
     ) -> list[BaseMessage]:
 
-        system_message = """
-    You are a Business Analytics Context Builder. 
-    Task: Transform JSON customer service data into a structured narrative.
-    Role: Descriptive ONLY. No insights, conclusions, recommendations, or hallucinations.
+        system_message = (
+            "You are a data context builder for a WhatsApp customer service SaaS platform. "
+            "Convert the JSON analytics data into a short, structured narrative. "
+            "Include: category totals, change %, and key themes from sample messages. "
+            "Be descriptive only — no recommendations. Output in English."
+        )
 
-    Data Schema:
-    - "summary": {category_type, total, change (%)}
-    - "samples": {category_type, sample_messages[]}
-
-    Output Requirements:
-    1. Overview: Brief interaction distribution.
-    2. Category Breakdown: List each category with its total, change %, and a brief summary of its sample messages.
-
-    Rules: Professional English, concise, strictly data-driven, no assumptions. This output will be used for downstream AI analysis.
-    """
-
-        human_message = f"""
-    Business: {business_description}
-    Data: {raw_data}
-
-    Convert this data into a structured business context narrative following the system rules.
-    """
+        human_message = (
+            f"Business: {business_description}\n"
+            f"Data: {raw_data}\n\n"
+            "Summarize this data as a structured context narrative."
+        )
 
         return self._get_prompt_setup(system_message, human_message)
 
@@ -44,35 +34,21 @@ class AgentAnalysisPrompt:
         self, business_description: str, insight_context: Optional[str] = None
     ):
 
-        system_message = """
-    You are an AI Business Analyst.
+        system_message = (
+            "You are a business analyst for a WhatsApp customer service SaaS platform. "
+            "The business below uses this SaaS to automate customer service via AI agent on WhatsApp. "
+            "Analyze the customer conversation data and generate ONE balanced insight — covering both strengths and issues. "
+            "Base your answer only on the context. Be concise. Output structured fields: insight, reason, impact."
+        )
 
-    Your task is to analyze customer service context and generate a concise business insight.
-
-    Focus on identifying the most important pattern or issue.
-
-    Rules:
-    - Base your answer only on the given context
-    - Do not hallucinate or add external assumptions
-    - Be concise and specific
-    - Do not repeat the context
-    - Output must follow the required structure
-    """
-
-        human_message = f"""
-    ## Business Description
-    {business_description}
-
-    ## Context
-    {insight_context}
-
-    ---
-
-    Generate:
-    1. Insight → what is happening
-    2. Reason → why it is happening (based on data)
-    3. Impact → why it matters to the business
-    """
+        human_message = (
+            f"Business: {business_description}\n\n"
+            f"Context:\n{insight_context}\n\n"
+            "Generate:\n"
+            "1. insight — what is happening (positive and/or negative)\n"
+            "2. reason — why it is happening (based on data)\n"
+            "3. impact — why it matters to the business"
+        )
 
         return self._get_prompt_setup(system_message, human_message)
 
@@ -84,36 +60,20 @@ class AgentAnalysisPrompt:
         impact: Optional[str] = None,
     ):
 
-        system_message = """
-    You are an AI Business Consultant.
+        system_message = (
+            "You are a business consultant for a SaaS customer service platform. "
+            "The business uses an AI WhatsApp agent to handle customer messages. "
+            "Give short, practical recommendations based on the insight. "
+            "Include both: things to maintain (positive) and things to improve (negative). "
+            "Max 3 bullet points. Write in Indonesian."
+        )
 
-    Your task is to generate practical and actionable recommendations based on a given business insight.
-
-    Rules:
-    - Recommendations must be specific and implementable
-    - Focus on actions the business owner can take
-    - Base your answer only on the provided insight, reason, and impact
-    - Do not add unrelated assumptions
-    - Be concise and clear
-    """
-
-        human_message = f"""
-    ## Business Description
-    {business_description}
-
-    ## Insight
-    {insight}
-
-    ## Reason
-    {reason}
-
-    ## Impact
-    {impact}
-
-    ---
-
-    Generate just 2-3 short, actionable recommendations that the business can implement.
-    Write in indonesian
-    """
+        human_message = (
+            f"Bisnis: {business_description}\n\n"
+            f"Insight: {insight}\n"
+            f"Alasan: {reason}\n"
+            f"Dampak: {impact}\n\n"
+            "Berikan 2–3 rekomendasi singkat dan spesifik."
+        )
 
         return self._get_prompt_setup(system_message, human_message)

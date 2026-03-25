@@ -34,3 +34,14 @@ class DocumentKnowladgeNotFound(BaseCustomeException):
                 "message": message,
             },
         )
+
+
+class InsightNotFound(BaseCustomeException):
+    def __init__(self, message: str = "Insight not found") -> None:
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "INSIGT_NOT_FOUND",
+                "message": message,
+            },
+        )
