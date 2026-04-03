@@ -1,6 +1,9 @@
 from uuid import UUID
 from dataclasses import dataclass
-from src.infrastructure.ai.agent.agent_analysis import AgentAnalysis, AgentAnalysisState
+from src.infrastructure.ai.agent.agent_analysis_messages import (
+    AgentAnalysisMessages,
+    AgentAnalysisState,
+)
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import IInsightRepository, IBusinessRepository
 from src.app.validators.insight_schema import AddInsight
@@ -33,7 +36,7 @@ class GenerateInsight(BaseUseCase[GenerateInsightInput, GenerateInsightOutput]):
         self.insight_repo = insight_repo
         self.business_repo = business_repo
         self.category_percentage_usecase = category_percentage_usecase
-        self.agent_analysis = AgentAnalysis()
+        self.agent_analysis = AgentAnalysisMessages()
 
     async def execute(
         self, input_data: GenerateInsightInput

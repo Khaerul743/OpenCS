@@ -90,7 +90,10 @@ class AnalyticsRepository(IAnalyticRepository):
             return None
 
     async def get_category_messages(
-        self, agent_id: UUID, since: datetime | None = None, until: datetime | None = None
+        self,
+        agent_id: UUID,
+        since: datetime | None = None,
+        until: datetime | None = None,
     ) -> list[dict] | None:
         try:
             query = (
@@ -115,3 +118,21 @@ class AnalyticsRepository(IAnalyticRepository):
         except Exception as e:
             print(f"Error fetching category messages: {e}")
             return None
+
+    async def get_knowladge_gap(self, agent_id: UUID) -> None | list[dict]:
+        # Pastikan agent_id di-convert ke string kalau library-nya minta format str
+        result = await self.db.rpc(
+            "get_random_gap_knowladge",
+            {
+                "params": {
+                    "p_limit_num": 5,
+                    "p_agent_id": "a04b8eb2-3b32-44e2-9a6a-bbca2c23ab58",
+                }
+            },
+        ).execute()
+
+        # Cek apakah result.data ada isinya
+        if not result.data:
+            return None
+
+        return result.data

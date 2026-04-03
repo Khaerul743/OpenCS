@@ -11,6 +11,18 @@ class AnalyticService extends HttpClient{
     async getMsgTrendHumanVsAi(request: NextRequest): Promise<Response>{
         return this.sendRequestWithAuth(request,"/agent/analytic/message-trend/human-vs-ai/me")
     }
+    
+    async getCategoryPercentage(request: NextRequest, period: string = 'alltime'): Promise<Response> {
+        return this.sendRequestWithAuth(request, `/agent/analytic/category-percentages/${period}/me`);
+    }
+
+    async getAnalyticInsight(request: NextRequest): Promise<Response> {
+        return this.sendRequestWithAuth(request, "/agent/analytic/insight");
+    }
+
+    async getKnowledgeGap(request: NextRequest): Promise<Response> {
+        return this.sendRequestWithAuth(request, "/agent/analytic/knowlage_gap");
+    }
 
 }
 

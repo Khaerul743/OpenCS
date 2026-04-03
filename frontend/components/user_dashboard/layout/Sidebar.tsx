@@ -6,6 +6,7 @@ import {
   LogOut,
   MessageSquare,
   PieChart,
+  Lightbulb,
   Play,
   Settings,
   Users
@@ -78,6 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed }) => {
 
         <SidebarSection title="Intelligence" isCollapsed={isCollapsed}>
           <SidebarItem icon={PieChart} label="Analytics" href="/analytics" isCollapsed={isCollapsed} />
+          <SidebarItem icon={Lightbulb} label="Insight" href="/insight" isCollapsed={isCollapsed} />
         </SidebarSection>
         
         <SidebarSection title="System" isCollapsed={isCollapsed}>

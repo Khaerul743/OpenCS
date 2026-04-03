@@ -7,3 +7,9 @@ class AddInsight(BaseModel):
     reason: str
     impact: str
     recommendation: str
+
+
+class AddGapKnowlage(BaseModel):
+    insight: str
+    knowladge_business_gap: str
+    recommendation: str

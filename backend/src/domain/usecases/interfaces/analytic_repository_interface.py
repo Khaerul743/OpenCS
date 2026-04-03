@@ -30,6 +30,13 @@ class IAnalyticRepository(ABC):
 
     @abstractmethod
     async def get_category_messages(
-        self, agent_id: UUID, since: datetime | None = None, until: datetime | None = None
+        self,
+        agent_id: UUID,
+        since: datetime | None = None,
+        until: datetime | None = None,
     ) -> list[dict] | None:
+        pass
+
+    @abstractmethod
+    async def get_knowladge_gap(self, agent_id: UUID) -> None | list[dict]:
         pass

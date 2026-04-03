@@ -1,37 +1,38 @@
-from typing import Optional
-from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
+import typing
+import langchain_core.messages
 
 
 class AgentAnalysisPrompt:
     def _get_prompt_setup(
         self, system_message: str, human_message: str
-    ) -> list[BaseMessage]:
+    ) -> list[langchain_core.messages.BaseMessage]:
         return [
-            SystemMessage(content=system_message),
-            HumanMessage(content=human_message),
+            langchain_core.messages.SystemMessage(content=system_message),
+            langchain_core.messages.HumanMessage(content=human_message),
         ]
 
     def context_builder_prompt(
         self, business_description: str, raw_data: dict
-    ) -> list[BaseMessage]:
+    ) -> list[langchain_core.messages.BaseMessage]:
 
         system_message = (
             "You are a data context builder for a WhatsApp customer service SaaS platform. "
             "Convert the JSON analytics data into a short, structured narrative. "
             "Include: category totals, change %, and key themes from sample messages. "
-            "Be descriptive only — no recommendations. Output in English."
+            "Be descriptive only — no recommendations."
         )
 
         human_message = (
             f"Business: {business_description}\n"
             f"Data: {raw_data}\n\n"
             "Summarize this data as a structured context narrative."
+            "Write in Indonesian."
         )
 
         return self._get_prompt_setup(system_message, human_message)
 
     def insight_generator(
-        self, business_description: str, insight_context: Optional[str] = None
+        self, business_description: str, insight_context: typing.Optional[str] = None
     ):
 
         system_message = (
@@ -48,6 +49,7 @@ class AgentAnalysisPrompt:
             "1. insight — what is happening (positive and/or negative)\n"
             "2. reason — why it is happening (based on data)\n"
             "3. impact — why it matters to the business"
+            "Write in Indonesian."
         )
 
         return self._get_prompt_setup(system_message, human_message)
@@ -55,9 +57,9 @@ class AgentAnalysisPrompt:
     def recommendation_generator(
         self,
         business_description: str,
-        insight: Optional[str] = None,
-        reason: Optional[str] = None,
-        impact: Optional[str] = None,
+        insight: typing.Optional[str] = None,
+        reason: typing.Optional[str] = None,
+        impact: typing.Optional[str] = None,
     ):
 
         system_message = (

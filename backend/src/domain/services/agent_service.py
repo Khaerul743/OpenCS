@@ -37,7 +37,12 @@ from src.domain.usecases.analytic import (
     GetTokenUsageTrendInput,
     GetTokenUsageTrendUseCase,
 )
-from src.domain.usecases.insight import GenerateInsightInput, GenerateInsight
+from src.domain.usecases.insight import (
+    GenerateInsightInput,
+    GenerateInsight,
+    GenerateGapKnowladgeInput,
+    GenerateGapKnowladge,
+)
 from src.infrastructure.ai.agent.manager import whatsapp_agent_manager
 from src.infrastructure.ai.agent.wa_agent import WhatsappAgentState
 
@@ -98,6 +103,9 @@ class AgentService(BaseService):
         )
         self.generate_insight_usecase = GenerateInsight(
             self.insight_repo, self.business_repo, self.get_category_percentages_usecase
+        )
+        self.generate_gap_knowladge = GenerateGapKnowladge(
+            self.business_repo, self.analytic_repo, self.insight_repo
         )
         super().__init__(__name__)
 
@@ -390,3 +398,43 @@ class AgentService(BaseService):
             raise RuntimeError("Generate insight usecase did not returned the data")
 
         return result_data.insight
+
+    async def triger_knowladge_gap(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        business_id = await self.business_repo.get_business_id_by_user_id(user_id)
+        if business_id is None:
+            raise BusinessNotFound()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound()
+
+        usecase_result = await self.generate_gap_knowladge.execute(
+            GenerateGapKnowladgeInput(business_id=business_id, agent_id=agent_id)
+        )
+
+        if not usecase_result.is_success():
+            self.raise_error_usecase(usecase_result)
+
+        result_data = usecase_result.get_data()
+        if not result_data:
+            raise RuntimeError(
+                "Generate gap knowladge usecase did not returned the data"
+            )
+
+        return result_data
+
+    async def get_knowladge_gap(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        business_id = await self.business_repo.get_business_id_by_user_id(user_id)
+        if business_id is None:
+            raise BusinessNotFound()
+
+        knowladge_gap = await self.insight_repo.get_current_gap(business_id)
+        return knowladge_gap

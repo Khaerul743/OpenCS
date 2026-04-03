@@ -14,5 +14,16 @@ class AgentAnalytics(BaseEntity):
     token: int
     ai_response: str
     user_message: str
-    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"]
-    created_at: Optional[datetime] = None
+    category: Literal[
+        "pengiriman",
+        "harga",
+        "promo",
+        "produk",
+        "stok",
+        "pemesanan",
+        "komplain",
+        "refund",
+        "lainnya",
+    ]
+    knowledge_gap_detected: bool
+    is_business_related: bool

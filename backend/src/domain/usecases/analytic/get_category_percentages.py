@@ -17,12 +17,12 @@ class GetCategoryPercentagesInput:
     period: PeriodType = "alltime"
 
 class SummaryType(BaseModel):
-    category_type: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"]
+    category_type: Literal["pengiriman", "harga", "promo", "produk", "stok", "pemesanan", "komplain", "refund", "lainnya"]
     total: int
     change: str  # e.g. "+12.50%", "-5.00%", "N/A"
 
 class SampleType(BaseModel):
-    category_type: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"]
+    category_type: Literal["pengiriman", "harga", "promo", "produk", "stok", "pemesanan", "komplain", "refund", "lainnya"]
     sample_messages: list[str]
 
 class GetCategoryPercentagesOutput(BaseModel):

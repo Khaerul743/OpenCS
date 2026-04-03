@@ -30,14 +30,17 @@
 #     await init_supabase()
 #     db = get_supabase()
 
-#     result = (
-#         await db.table("Businesses")
-#         .select("*")
-#         .eq("id", UUID("06a8a34c-12f8-42c6-bf09-33f2e3a08171"))
-#         .maybe_single()
-#         .execute()
-#     )
-#     print(f"result: {result}")
+#     result = await db.rpc(
+#         "get_random_gap_knowladge",
+#         {
+#             "params": {
+#                 "p_limit_num": 5,
+#                 "p_agent_id": "a04b8eb2-3b32-44e2-9a6a-bbca2c23ab58",
+#             }
+#         },
+#     ).execute()
+
+#     print(result)
 
 
 # asyncio.run(main())
@@ -93,40 +96,32 @@
 #         print(result)
 #         break
 
-#     print(agent.get_response())
+#     print(agent.get_response());
+from src.infrastructure.ai.agent.agent_analysis_gap import (
+    AgentAnalysisGapState,
+    AgentAnalysisGap,
+)
 
+business_desc = "Ayam Bakar Naufal adalah usaha kuliner rumahan yang menyajikan berbagai menu ayam bakar dengan bumbu khas nusantara. Selain ayam bakar, tersedia juga beberapa pilihan lauk pendamping seperti ayam goreng, ikan bakar, dan aneka sambal. "
+raw_data = [
+    {
+        "ai_response": "Saya belum menemukan informasi tentang promo yang tersedia di Ayam Bakar Naufal. Kamu bisa cek langsung ke tempat atau tanya di media sosial mereka untuk info lebih lanjut!",
+        "user_message": "apakah ada promo?",
+        "category": "promo",
+        "is_business_related": True,
+        "knowledge_gap_detected": True,
+    }
+]
 
-from src.infrastructure.ai.agent.agent_analysis import AgentAnalysisState, AgentAnalysis
-
-agent = AgentAnalysis()
-desc = "Ayam Bakar Naufal adalah usaha kuliner rumahan yang menyajikan berbagai menu ayam bakar dengan bumbu khas nusantara. Selain ayam bakar, tersedia juga beberapa pilihan lauk pendamping seperti ayam goreng, ikan bakar, dan aneka sambal. "
-raw = {
-    "summary": [
-        {"category_type": "lainnya", "total": 5, "change": "+66.67%"},
-        {"category_type": "produk & stok", "total": 1, "change": "+100.00%"},
-        {"category_type": "komplain", "total": 10, "change": "+50.00%"},
-    ],
-    "samples": [
-        {
-            "category_type": "lainnya",
-            "sample_messages": ["pembayaran pake apa ya?", "hai"],
-        },
-        {
-            "category_type": "produk & stok",
-            "sample_messages": ["menu dengan harga paling murah?"],
-        },
-        {
-            "category_type": "komplain",
-            "sample_messages": [
-                "Ini kenapa pesanan saya belum sampai!",
-                "Ayam bakar gk enak",
-                "Balikin uang saya",
-            ],
-        },
-    ],
-}
+agent = AgentAnalysisGap()
 result = agent.execute(
-    AgentAnalysisState(messages=[], business_description=desc, raw_data=raw), "default"
+    AgentAnalysisGapState(
+        messages=[],
+        user_message="",
+        business_description=business_desc,
+        raw_data=raw_data,
+    ),
+    "default",
 )
 
 print(result)

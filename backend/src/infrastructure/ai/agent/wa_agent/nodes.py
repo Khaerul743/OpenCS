@@ -72,7 +72,7 @@ class WhatsappAgentNode(BaseNode):
             result = self.call_llm_with_structured_output(messages, MainAgentOutput)
 
         result_dict = result.model_dump()
-
+        print(result_dict)
         # Count token usage
         self.estimate_structured_output_tokens(
             messages,
@@ -93,7 +93,9 @@ class WhatsappAgentNode(BaseNode):
                 "human_fallback": result_dict["human_fallback"],
                 "decision_summary": result_dict["decision_summary"],
                 "conversation_summary": self.con_summary,
-                "category": result_dict["category"]
+                "category": result_dict["category"],
+                "is_business_related": result_dict["is_business_related"],
+                "knowledge_gap_detected": result_dict["knowledge_gap_detected"],
             }
         return {
             "response": result_dict["your_answer"],
@@ -103,13 +105,15 @@ class WhatsappAgentNode(BaseNode):
             "human_fallback": result_dict["human_fallback"],
             "decision_summary": result_dict["decision_summary"],
             "category": result_dict["category"],
+            "is_business_related": result_dict["is_business_related"],
+            "knowledge_gap_detected": result_dict["knowledge_gap_detected"],
             "messages": list(state.messages)
             + [HumanMessage(content=state.user_message)]
             + [
                 AIMessage(
-                    content=result_dict["your_answer"]
-                    if result_dict["your_answer"]
-                    else ""
+                    content=(
+                        result_dict["your_answer"] if result_dict["your_answer"] else ""
+                    )
                 )
             ],
         }

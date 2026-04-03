@@ -10,6 +10,7 @@ from .human_fallback import Human_Fallback
 from .messages import Messages
 from .users import User
 from .insigt import Insight
+from .gap_knowladge import GapKnowladge
 
 __all__ = [
     "User",
@@ -24,4 +25,5 @@ __all__ = [
     "Agent_configuration",
     "Human_Fallback",
     "Insight",
+    "GapKnowladge",
 ]

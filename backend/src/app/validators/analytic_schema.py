@@ -11,6 +11,18 @@ class InsertAgentAnalytic(BaseModel):
     response_time: float
     token: int
     user_message: str
-    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = "lainnya"
+    category: Literal[
+        "pengiriman",
+        "harga",
+        "promo",
+        "produk",
+        "stok",
+        "pemesanan",
+        "komplain",
+        "refund",
+        "lainnya",
+    ] = "lainnya"
     ai_response: str
+    is_business_related: bool
+    knowledge_gap_detected: bool
     created_at: Optional[datetime] = None

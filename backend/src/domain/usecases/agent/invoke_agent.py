@@ -92,7 +92,9 @@ class InvokeAgentUseCase(BaseUseCase[InvokeAgentInput, InvokeAgentOutput]):
                     ai_response=result_message,
                     human_takeover=agent_result["human_fallback"],
                     user_message=input_data.agent_state.user_message,
-                    category=agent_result["category"]
+                    category=agent_result["category"],
+                    is_business_related=agent_result["is_business_related"],
+                    knowledge_gap_detected=agent_result["knowledge_gap_detected"],
                 ),
             )
 

@@ -21,11 +21,25 @@ class MainAgentOutput(BaseModel):
             "berisi kesimpulan dan informasi yang sekiranya diperlukan untuk menjawab pertanyaan customer"
         )
     )
-    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = Field(
-        description=("Tentukan kategori pesan dari customer")
-    )
+    category: Literal[
+        "pengiriman",
+        "harga",
+        "promo",
+        "produk",
+        "stok",
+        "pemesanan",
+        "komplain",
+        "refund",
+        "lainnya",
+    ] = Field(description=("Tentukan kategori pesan dari customer"))
     confidence: float = Field(
         description="Tingkat kepercayaan diri kamu dalam menjawab pertanyaan tersebut(1-100)"
+    )
+    is_business_related: bool = Field(
+        description="Apakah pertanyaan customer berkaitan langsung dengan bisnis (produk, layanan, transaksi, dll)"
+    )
+    knowledge_gap_detected: bool = Field(
+        description="Apakah terdapat kekurangan informasi bisnis yang membuat jawaban kurang optimal"
     )
 
 
@@ -97,7 +111,17 @@ class WhatsappAgentState(BaseAgentStateModel):
     need_more_information: bool = False
     call_tool_again: bool = False
     decision_summary: Optional[str] = None
-    category: Literal["pengiriman", "harga & promo", "produk & stok", "pemesanan", "komplain", "refund", "lainnya"] = "lainnya"
+    category: Literal[
+        "pengiriman",
+        "harga",
+        "promo",
+        "produk",
+        "stok",
+        "pemesanan",
+        "komplain",
+        "refund",
+        "lainnya",
+    ] = "lainnya"
     rag_query: Optional[str] = None
     rag_query_result: Optional[str] = None
     business_knowladge_key: List = []
@@ -105,3 +129,5 @@ class WhatsappAgentState(BaseAgentStateModel):
     confidence_level: float = 100
     conversation_summary: Optional[str] = None
     fallback_human: bool = False
+    is_business_related: bool = False
+    knowledge_gap_detected: bool = False

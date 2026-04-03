@@ -4,7 +4,7 @@ from .nodes import AgentAnalysisNode
 from .workflow import AgentAnalysisWorklow
 
 
-class AgentAnalysis(BaseAgent):
+class AgentAnalysisMessages(BaseAgent):
     def __init__(self):
         self.prompts = AgentAnalysisPrompt()
         self.nodes = AgentAnalysisNode(self.prompts, "gpt-4o-mini", "openai")

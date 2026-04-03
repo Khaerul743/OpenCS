@@ -24,7 +24,6 @@ class AgentConfigurationNotFound(BaseCustomeException):
             },
         )
 
-
 class DocumentKnowladgeNotFound(BaseCustomeException):
     def __init__(self, message: str = "Document knowladge not found") -> None:
         super().__init__(
