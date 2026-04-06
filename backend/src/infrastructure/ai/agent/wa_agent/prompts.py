@@ -43,7 +43,6 @@ class WhatsappAgentPrompt:
         for k, v in self.business_knowladge.items():
             # Tambahkan label 'ACTION: REQUIRE_LOOKUP' supaya AI sadar ini data yang terkunci
             business_knowladge_str += f"- ID: {k} | DESCRIPTION: [ACTION: REQUIRE_LOOKUP] {v.category_description}\n"
-        print(business_knowladge_str)
         system_message = f"""
 # Role
 Professional AI Customer Service Agent.
@@ -159,6 +158,31 @@ Daftar di bawah ini adalah KATALOG informasi. Kamu HANYA tahu judulnya, BUKAN is
         prompt = self._base_structure(system_message, human_message)
 
         return prompt
+
+    def message_analysis_prompt(
+        self, user_message: str, response: Optional[str] = None
+    ):
+        system_message = f"""
+#ROLE:
+Kamu adalah agent yang bertugas untuk menganalisis pesan dan jawaban antara percakapan customer dan customer service agent untuk sebuah bisnis.
+Berikut adalah detail dari bisnis tersebut:
+* Nama bisnis: {self.business_information.business_name}
+* Deskripsi bisnis: {self.business_information.business_desc}
+
+#TASK:
+Analisis percakapan antara customer dan customer service agent dengan detail output sebagai berikut:
+* category: Tentukan kategori pesan dari customer berdasarkan kategori yang tersedia.
+* is_business_related: Tentukan apakah pertanyaan customer berkaitan dengan bisnis.
+* knowledge_gap_detected: Tentukan apakah terdapat gap knowladge tentang bisnis yang dialami oleh customer service agent.
+Pengetahuan tentang knowladge gap akan sangat penting bagi bisnis supaya mereka dapat menambahkan pengetahuan bisnis kepada customer service agent mereka.
+Oleh karena itu, jika pertanyaan customer tidak berkaitan dengan bisnis maka itu tidak terlalu penting.
+"""
+        human_message = f"""
+Berikut adalah pertanyaan dari customer dan jawaban dari agent:
+* Pertanyaan: {user_message}
+* Jawaban: {response}
+"""
+        return self._base_structure(system_message, human_message)
 
     def call_preparation_tool(
         self, user_message: str, decision_summary_past: Optional[str] = None

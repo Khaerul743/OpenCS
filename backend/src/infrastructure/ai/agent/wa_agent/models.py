@@ -21,6 +21,12 @@ class MainAgentOutput(BaseModel):
             "berisi kesimpulan dan informasi yang sekiranya diperlukan untuk menjawab pertanyaan customer"
         )
     )
+    confidence: float = Field(
+        description="Tingkat kepercayaan diri kamu dalam menjawab pertanyaan tersebut(1-100)"
+    )
+
+
+class MessageAnalysisOutput(BaseModel):
     category: Literal[
         "pengiriman",
         "harga",
@@ -32,9 +38,6 @@ class MainAgentOutput(BaseModel):
         "refund",
         "lainnya",
     ] = Field(description=("Tentukan kategori pesan dari customer"))
-    confidence: float = Field(
-        description="Tingkat kepercayaan diri kamu dalam menjawab pertanyaan tersebut(1-100)"
-    )
     is_business_related: bool = Field(
         description="Apakah pertanyaan customer berkaitan langsung dengan bisnis (produk, layanan, transaksi, dll)"
     )

@@ -5,7 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest){
     try{
-        const res = await analyticService.getMsgTrendHumanVsAi(request)
+        const searchParams = request.nextUrl.searchParams;
+        const period = searchParams.get("period") || "weekly";
+
+        const res = await analyticService.getMsgTrendHumanVsAi(request, period)
         const data = await res.json()
 
         if (!res.ok){

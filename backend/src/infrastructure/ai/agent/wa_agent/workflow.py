@@ -16,6 +16,8 @@ class WhatsappAgentWorkflow(BaseWorkflow):
     def _build_workflow(self):
         graph = StateGraph(WhatsappAgentState)
         graph.add_node("main_agent", self.node.main_agent)
+        graph.add_node("temp_node", self.node.next_router_temp_node)
+        graph.add_node("message_analysis", self.node.message_analysis)
         graph.add_node("say_sorry", self.node.say_sorry)
         graph.add_node("human_fallback", self.node.human_fallback)
         graph.add_node(
@@ -30,6 +32,16 @@ class WhatsappAgentWorkflow(BaseWorkflow):
         graph.add_edge(START, "main_agent")
         graph.add_conditional_edges(
             "main_agent",
+            self.node.main_agent_router,
+            {
+                "next_router": "temp_node",
+                "next_to_message_analysis": "message_analysis",
+            },
+        )
+
+        # graph.add_edge("main_agent", "message_analysis")
+        graph.add_conditional_edges(
+            "temp_node",
             self.node.router,
             {
                 "end": END,
@@ -37,6 +49,7 @@ class WhatsappAgentWorkflow(BaseWorkflow):
                 "human_fallback": "human_fallback",
             },
         )
+
         graph.add_edge("human_fallback", END)
         graph.add_edge("say_sorry", END)
         graph.add_edge("update_state_aftet_main_agent", "call_preparation_tool")
@@ -53,10 +66,11 @@ class WhatsappAgentWorkflow(BaseWorkflow):
                 "say_sorry": "say_sorry",
                 "next": "call_preparation_tool",
                 "human_fallback": "human_fallback",
-                "end": END,
+                "message_analysis": "message_analysis",
             },
         )
 
+        graph.add_edge("message_analysis", END)
         return graph.compile(self.state_saver)
 
     def run(self, state: WhatsappAgentState, thread_id: str):

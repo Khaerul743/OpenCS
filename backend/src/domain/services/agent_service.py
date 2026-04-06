@@ -228,7 +228,7 @@ class AgentService(BaseService):
 
         return result_data
 
-    async def get_human_vs_ai_message_trend(self):
+    async def get_human_vs_ai_message_trend(self, period: str = "weekly"):
         user_id = current_user_id.get()
         if user_id is None:
             raise UnauthorizedException()
@@ -238,7 +238,7 @@ class AgentService(BaseService):
             raise AgentNotFound()
 
         result = await self.get_human_vs_ai_message_trend_usecase.execute(
-            GetHumanVsAiMessageTrendInput(agent_id=agent_id)
+            GetHumanVsAiMessageTrendInput(agent_id=agent_id, period=period)
         )
         if not result.is_success():
             self.raise_error_usecase(result)

@@ -85,13 +85,14 @@ async def get_message_usage_trend(
     return success_response(result, "Get message usage trend is successfully")
 
 
-@router.get("/analytic/message-trend/human-vs-ai/me", status_code=status.HTTP_200_OK)
+@router.get("/analytic/message-trend/human-vs-ai/{period}/me", status_code=status.HTTP_200_OK)
 async def get_human_vs_ai_message_trend(
+    period: str,
     _: None = Depends(jwtHandler.jwt_required),
     __: None = Depends(require_roles("admin", "user")),
     controller: AgentController = Depends(get_agent_controller),
 ):
-    result = await controller.get_human_vs_ai_message_trend_handler()
+    result = await controller.get_human_vs_ai_message_trend_handler(period)
     return success_response(result, "Get human vs ai message trend is successfully")
 
 

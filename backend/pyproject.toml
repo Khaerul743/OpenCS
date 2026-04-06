@@ -28,4 +28,5 @@ dependencies = [
     "python-multipart>=0.0.21",
     "pypdf>=6.5.0",
     "colorama>=0.4.6",
+    "redis>=7.4.0",
 ]

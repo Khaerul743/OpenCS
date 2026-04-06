@@ -100,3 +100,14 @@ class CustomerRepository(ICustomerRepository):
             return None
 
         return Customers.model_validate(result.data[0])
+
+    async def get_all_customer_by_agent_id(
+        self, agent_id: UUID
+    ) -> list[Customers]:
+        result = await (
+            self.db.table("Customers")
+            .select("*")
+            .eq("agent_id", agent_id)
+            .execute()
+        )
+        return [Customers.model_validate(item) for item in result.data]

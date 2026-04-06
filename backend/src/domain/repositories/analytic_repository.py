@@ -57,7 +57,12 @@ class AnalyticsRepository(IAnalyticRepository):
 
         return result.data
 
-    async def get_human_vs_ai_message_trend(self, agent_id: UUID) -> list[dict] | None:
+    async def get_human_vs_ai_message_trend(
+        self, 
+        agent_id: UUID,
+        since: datetime | None = None,
+        until: datetime | None = None
+    ) -> list[dict] | None:
         try:
             # Step 1: Get conversation IDs for the agent
             conversations = (
@@ -73,12 +78,18 @@ class AnalyticsRepository(IAnalyticRepository):
                 return None
 
             # Step 2: Fetch messages for these conversations
-            messages = (
-                await self.db.table("Messages")
+            query = (
+                self.db.table("Messages")
                 .select("created_at, sender_type")
                 .in_("conversation_id", conversation_ids)
-                .execute()
             )
+
+            if since is not None:
+                query = query.gte("created_at", since.isoformat())
+            if until is not None:
+                query = query.lte("created_at", until.isoformat())
+
+            messages = await query.execute()
 
             if len(messages.data) == 0:
                 return None

@@ -17,39 +17,59 @@ export default function AnalyticPage() {
   const [messageData, setMessageData] = useState<MessageUsageTrendResponse[]>([]);
   const [humanVsAiData, setHumanVsAiData] = useState<MessageTrendHumanVsAiResponse[]>([]);
   
+  const [humanVsAiPeriod, setHumanVsAiPeriod] = useState<string>('weekly');
+  const [isHumanVsAiLoading, setIsHumanVsAiLoading] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const formatDataDate = (data: any[]) => data.map(item => ({
+    ...item, 
+    _formattedDate: item.date.includes(' ') 
+      ? new Date(item.date.replace(' ', 'T')).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      : new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  }));
+
+  const fetchHumanVsAi = async (period = humanVsAiPeriod) => {
+    setIsHumanVsAiLoading(true);
+    try {
+        const url = `/api/analytic/humanvsai?period=${period}`;
+
+        const res = await fetch(url);
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.message || "Failed to fetch Human vs AI Data");
+        
+        setHumanVsAiData(formatDataDate(result.data || []));
+    } catch (err: any) {
+        console.error("Human Vs AI fetch error:", err);
+    } finally {
+        setIsHumanVsAiLoading(false);
+    }
+  };
 
   const fetchAnalytics = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Fetch all three endpoints concurrently for better performance
-      const [tokenRes, messageRes, humanVsAiRes] = await Promise.all([
+      // Fetch concurrently
+      const [tokenRes, messageRes] = await Promise.all([
         fetch('/api/analytic/token'),
-        fetch('/api/analytic/message'),
-        fetch('/api/analytic/humanvsai')
+        fetch('/api/analytic/message')
       ]);
 
-      const [tokenResult, messageResult, humanVsAiResult] = await Promise.all([
+      const [tokenResult, messageResult] = await Promise.all([
         tokenRes.json(),
-        messageRes.json(),
-        humanVsAiRes.json()
+        messageRes.json()
       ]);
 
       if (!tokenRes.ok) throw new Error(tokenResult.message || "Failed to fetch Token Usage Data");
       if (!messageRes.ok) throw new Error(messageResult.message || "Failed to fetch Message Trend Data");
-      if (!humanVsAiRes.ok) throw new Error(humanVsAiResult.message || "Failed to fetch Human vs AI Data");
-
-      // Format dates consistently for parsing before plotting
-      const formatDataDate = (data: any[]) => data.map(item => ({
-        ...item, 
-        _formattedDate: new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-      }));
 
       setTokenData(formatDataDate(tokenResult.data));
       setMessageData(formatDataDate(messageResult.data));
-      setHumanVsAiData(formatDataDate(humanVsAiResult.data));
+      
+      // Also fetch human vs ai independently to sync up
+      await fetchHumanVsAi(humanVsAiPeriod);
 
     } catch (err: any) {
       console.error("Analytic fetch error:", err);
@@ -189,9 +209,34 @@ export default function AnalyticPage() {
 
           {/* Bottom Row: Human vs AI comparison */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-             <div className="mb-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Human vs AI Handled Messages</h3>
-                <p className="text-sm text-gray-500">Compare the volume of messages intercepted by the AI versus those handed off to humans.</p>
+             <div className="mb-6 flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">Human vs AI Handled Messages</h3>
+                  <p className="text-sm text-gray-500">Compare the volume of messages intercepted by the AI versus those handed off to humans.</p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row items-center gap-2">
+                  <select 
+                    value={humanVsAiPeriod}
+                    onChange={(e) => {
+                        const newPeriod = e.target.value;
+                        setHumanVsAiPeriod(newPeriod);
+                        fetchHumanVsAi(newPeriod);
+                    }}
+                    className="border border-gray-200 bg-white rounded-lg px-3 py-1.5 text-sm text-gray-700 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 cursor-pointer"
+                  >
+                    <option value="day">Last 1 Day</option>
+                    <option value="weekly">Last 7 Days</option>
+                    <option value="monthly">Last 1 Month</option>
+                  </select>
+                  <button 
+                    onClick={() => fetchHumanVsAi()}
+                    disabled={isHumanVsAiLoading}
+                    className="ml-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 p-1.5 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCcw size={16} className={isHumanVsAiLoading ? 'animate-spin' : ''} />
+                  </button>
+                </div>
              </div>
              
              <div className="w-full h-[350px]">

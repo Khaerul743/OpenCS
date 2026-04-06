@@ -50,3 +50,12 @@ async def update_business(
     return success_response(
         result_data, "Update business is successfully", status.HTTP_200_OK
     )
+
+@router.get("/customers/me", status_code=status.HTTP_200_OK)
+async def get_customers(
+    _: None = Depends(jwtHandler.jwt_required),
+    __: None = Depends(require_roles("admin", "user")),
+    controller: BusinessController = Depends(get_business_controller),
+):
+    result = await controller.get_customers_handler()
+    return success_response(result, "Get customers is successfully")

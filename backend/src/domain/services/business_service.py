@@ -7,9 +7,10 @@ from src.core.exceptions.business_exception import (
     BusinessIsAlreadyExist,
     BusinessNotFound,
 )
+from src.core.exceptions.agent_exception import AgentNotFound
 from src.domain.models.businesses import Business
-from src.domain.repositories import BusinessRepository
-from src.domain.usecases.business import AddBusiness, AddBusinessInput
+from src.domain.repositories import BusinessRepository, CustomerRepository, AgentRepository
+from src.domain.usecases.business import AddBusiness, AddBusinessInput, GetCustomers, GetCustomersInput
 
 from .base import BaseService
 
@@ -18,9 +19,12 @@ class BusinessService(BaseService):
     def __init__(self, db: AsyncClient):
         self.db = db
         self.business_repo = BusinessRepository(db)
+        self.customer_repo = CustomerRepository(db)
+        self.agent_repo = AgentRepository(db)
 
         # usecases
         self.add_business_usecase = AddBusiness(self.business_repo)
+        self.get_customers_usecase = GetCustomers(self.customer_repo)
 
         super().__init__(__name__)
 
@@ -30,6 +34,30 @@ class BusinessService(BaseService):
             raise BusinessNotFound()
 
         return result
+
+    async def get_customers(self):
+        user_id = current_user_id.get()
+        if user_id is None:
+            raise UnauthorizedException()
+
+        agent_id = await self.agent_repo.get_agent_id_by_user_id(user_id)
+        if agent_id is None:
+            raise AgentNotFound("Agent not found for current user")
+
+        result = await self.get_customers_usecase.execute(
+            GetCustomersInput(agent_id=agent_id)
+        )
+        if not result.is_success():
+            self.raise_error_usecase(result)
+
+        result_data = result.get_data()
+        if result_data is None:
+            raise RuntimeError("Get customers usecase did not return data")
+
+        return {
+            "total_customers": result_data.total_customers,
+            "customers": result_data.customers
+        }
 
     async def add_new_business(self, payload: AddBusinessIn) -> Business:
         user_id = current_user_id.get()

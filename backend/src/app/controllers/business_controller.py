@@ -26,6 +26,17 @@ class BusinessController(BaseController):
             self._logger.error(str(e))
             raise e
 
+    async def get_customers_handler(self):
+        try:
+            result = await self.business_service.get_customers()
+            return result
+        except BusinessNotFound as e:
+            self._logger.warning(str(e))
+            raise e
+        except Exception as e:
+            self._logger.error(str(e))
+            raise e
+
     async def add_new_business_handler(self, payload: AddBusinessIn):
         try:
             result = await self.business_service.add_new_business(payload)

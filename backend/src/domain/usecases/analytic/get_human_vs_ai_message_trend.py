@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from src.domain.usecases.base import BaseUseCase, UseCaseResult
 from src.domain.usecases.interfaces import IAnalyticRepository
@@ -9,6 +9,7 @@ from src.domain.usecases.interfaces import IAnalyticRepository
 @dataclass
 class GetHumanVsAiMessageTrendInput:
     agent_id: UUID
+    period: str = "weekly"
 
 
 @dataclass
@@ -26,8 +27,19 @@ class GetHumanVsAiMessageTrendUseCase(
         self, input_data: GetHumanVsAiMessageTrendInput
     ) -> UseCaseResult[GetHumanVsAiMessageTrendOutput]:
         try:
+            today_utc = datetime.now(timezone.utc)
+            if input_data.period == "day":
+                since = today_utc - timedelta(days=1)
+                grouping = "hour"
+            elif input_data.period == "monthly":
+                since = today_utc - timedelta(days=30)
+                grouping = "day"
+            else: # defauls to weekly for anything else
+                since = today_utc - timedelta(days=7)
+                grouping = "day"
+                
             result = await self.analytic_repo.get_human_vs_ai_message_trend(
-                input_data.agent_id
+                input_data.agent_id, since=since
             )
             if result is None:
                 return UseCaseResult.success_result(
@@ -42,13 +54,17 @@ class GetHumanVsAiMessageTrendUseCase(
                     try:
                         # Handle potential timezone offsets like +00:00
                         date_obj = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
-                        date_str = date_obj.date().isoformat()
                     except ValueError:
                         continue 
                 elif isinstance(raw_date, datetime):
-                    date_str = raw_date.date().isoformat()
+                    date_obj = raw_date
                 else:
                     continue
+
+                if grouping == "hour":
+                    date_str = date_obj.strftime("%Y-%m-%d %H:00")
+                else:
+                    date_str = date_obj.strftime("%Y-%m-%d")
 
                 sender_type = item["sender_type"]
 
@@ -65,7 +81,7 @@ class GetHumanVsAiMessageTrendUseCase(
                 for date, counts in grouped_data.items()
             ]
             
-            # Sort by date
+            # Sort by date naturally
             trend_data.sort(key=lambda x: x["date"])
 
             return UseCaseResult.success_result(

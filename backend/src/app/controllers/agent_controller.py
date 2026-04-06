@@ -42,8 +42,8 @@ class AgentController(BaseController):
         result = await self.agent_service.get_message_usage_trend()
         return result.trend_data
 
-    async def get_human_vs_ai_message_trend_handler(self):
-        result = await self.agent_service.get_human_vs_ai_message_trend()
+    async def get_human_vs_ai_message_trend_handler(self, period: str = "weekly"):
+        result = await self.agent_service.get_human_vs_ai_message_trend(period)
         return result.trend_data
 
     async def get_category_percentages_handler(self, period: str = "alltime"):

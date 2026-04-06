@@ -8,8 +8,9 @@ class AnalyticService extends HttpClient{
     async getMessageTrend(request: NextRequest): Promise<Response>{
         return this.sendRequestWithAuth(request,"/agent/analytic/message-usage-trend/me")
     }
-    async getMsgTrendHumanVsAi(request: NextRequest): Promise<Response>{
-        return this.sendRequestWithAuth(request,"/agent/analytic/message-trend/human-vs-ai/me")
+    async getMsgTrendHumanVsAi(request: NextRequest, period: string = 'weekly'): Promise<Response> {
+        const url = `/agent/analytic/message-trend/human-vs-ai/${period}/me`;
+        return this.sendRequestWithAuth(request, url);
     }
     
     async getCategoryPercentage(request: NextRequest, period: string = 'alltime'): Promise<Response> {

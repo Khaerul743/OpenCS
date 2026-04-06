@@ -13,6 +13,12 @@ class ICustomerRepository(ABC):
         pass
 
     @abstractmethod
+    async def get_all_customer_by_agent_id(
+        self, agent_id: UUID
+    ) -> list[Customers]:
+        pass
+
+    @abstractmethod
     async def get_all_customer_by_business_id(
         self, business_id: UUID
     ) -> list[Customers]:

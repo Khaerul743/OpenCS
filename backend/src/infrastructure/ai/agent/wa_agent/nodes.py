@@ -11,6 +11,7 @@ from .models import (
     MainAgentOutput,
     WhatsappAgentState,
     create_call_preparation_tool_model,
+    MessageAnalysisOutput,
 )
 from .prompts import WhatsappAgentPrompt
 from .schema import BusinessKnowladgeContent
@@ -72,7 +73,6 @@ class WhatsappAgentNode(BaseNode):
             result = self.call_llm_with_structured_output(messages, MainAgentOutput)
 
         result_dict = result.model_dump()
-        print(result_dict)
         # Count token usage
         self.estimate_structured_output_tokens(
             messages,
@@ -93,9 +93,6 @@ class WhatsappAgentNode(BaseNode):
                 "human_fallback": result_dict["human_fallback"],
                 "decision_summary": result_dict["decision_summary"],
                 "conversation_summary": self.con_summary,
-                "category": result_dict["category"],
-                "is_business_related": result_dict["is_business_related"],
-                "knowledge_gap_detected": result_dict["knowledge_gap_detected"],
             }
         return {
             "response": result_dict["your_answer"],
@@ -104,9 +101,6 @@ class WhatsappAgentNode(BaseNode):
             "need_more_information": result_dict["need_more_information"],
             "human_fallback": result_dict["human_fallback"],
             "decision_summary": result_dict["decision_summary"],
-            "category": result_dict["category"],
-            "is_business_related": result_dict["is_business_related"],
-            "knowledge_gap_detected": result_dict["knowledge_gap_detected"],
             "messages": list(state.messages)
             + [HumanMessage(content=state.user_message)]
             + [
@@ -116,6 +110,30 @@ class WhatsappAgentNode(BaseNode):
                     )
                 )
             ],
+        }
+
+    def main_agent_router(self, state: WhatsappAgentState):
+        if state.need_more_information:
+            return "next_router"
+        return "next_to_message_analysis"
+
+    def next_router_temp_node(self, state: WhatsappAgentState):
+        return
+
+    def message_analysis(self, state: WhatsappAgentState):
+        prompt = self.prompt.message_analysis_prompt(state.user_message, state.response)
+        result = self.call_llm_with_structured_output(prompt, MessageAnalysisOutput)
+        result_dict = result.model_dump()
+        self.estimate_structured_output_tokens(
+            prompt,
+            str(result_dict["category"]),
+        )
+        print(f"agent_response: {state.response}")
+        print(result_dict)
+        return {
+            "category": result_dict["category"],
+            "is_business_related": result_dict["is_business_related"],
+            "knowledge_gap_detected": result_dict["knowledge_gap_detected"],
         }
 
     def router(self, state: WhatsappAgentState):
@@ -307,4 +325,4 @@ class WhatsappAgentNode(BaseNode):
             return "next"
         if state.human_fallback and state.confidence_level < 50:
             return "human_fallback"
-        return "end"
+        return "message_analysis"
